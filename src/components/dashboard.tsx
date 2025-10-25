@@ -3,7 +3,7 @@
 import { FileUpload } from '@/components/ui/file-upload';
 import { JsonFormatHelper } from '@/components/ui/json-format-helper';
 import { QuizCard } from '@/components/ui/quiz-card';
-import { awsAiPractitionerQuiz } from '@/data/aws-ai-practitioner';
+import { awsAiPractitionerQuiz, AWSAISERVICESQUIZ } from '@/data/aws-ai-practitioner';
 import { Quiz } from '@/types/quiz';
 import { storage } from '@/lib/storage';
 import { useCallback, useEffect, useState } from 'react';
@@ -44,6 +44,10 @@ export function Dashboard() {
         {/* Built-in Quizzes */}
         <QuizCard
           quiz={awsAiPractitionerQuiz}
+          onStart={handleStartQuiz}
+        />
+        <QuizCard
+          quiz={AWSAISERVICESQUIZ}
           onStart={handleStartQuiz}
         />
         

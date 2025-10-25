@@ -1895,3 +1895,254 @@ export const awsAiPractitionerQuiz: Quiz = {
     }
   ]
 }
+
+export const AWSAISERVICESQUIZ: Quiz = {
+  "metadata": {
+    "title": "AWS AI & Machine Learning Services Comprehensive Quiz",
+    "version": "1.0",
+    "totalQuestions": 30,
+    "description": "Test your knowledge of AWS AI/ML services including Amazon Bedrock, SageMaker, Amazon Q, Computer Vision, Language Services, and more"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which AWS service provides access to foundation models from multiple AI companies including Anthropic, Meta, and Stability AI?",
+      "options": ["Amazon SageMaker", "Amazon Bedrock", "Amazon Comprehend", "Amazon Q Business"],
+      "correctAnswer": ["Amazon Bedrock"],
+      "category": "Generative AI",
+      "explanation": "Amazon Bedrock is a fully managed service that provides access to foundation models from AI21 Labs, Anthropic, Cohere, Meta, Mistral AI, Stability AI, and Amazon Nova models."
+    },
+    {
+      "id": 2,
+      "question": "What is the primary purpose of Amazon Q Developer (formerly CodeWhisperer)?",
+      "options": ["Business intelligence and analytics", "AI assistant for developers with coding and security scanning", "Natural language processing", "Image recognition"],
+      "correctAnswer": ["AI assistant for developers with coding and security scanning"],
+      "category": "Amazon Q",
+      "explanation": "Amazon Q Developer is an AI assistant that helps developers with coding, testing, upgrading applications, security scanning, and optimizing AWS resources."
+    },
+    {
+      "id": 3,
+      "question": "Which SageMaker component allows business analysts to build ML models without writing code?",
+      "options": ["SageMaker Studio", "SageMaker Canvas", "SageMaker Autopilot", "SageMaker Pipelines"],
+      "correctAnswer": ["SageMaker Canvas"],
+      "category": "SageMaker Platform",
+      "explanation": "SageMaker Canvas is a no-code ML service designed specifically for business analysts to generate predictions without writing any code."
+    },
+    {
+      "id": 4,
+      "question": "Which AWS services can Amazon Q integrate with? (Select all that apply)",
+      "options": ["AWS Glue", "Amazon QuickSight", "Amazon Connect", "Amazon S3"],
+      "correctAnswer": ["AWS Glue", "Amazon QuickSight", "Amazon Connect"],
+      "category": "Amazon Q",
+      "explanation": "Amazon Q integrates with multiple AWS services including Glue (for data integration), QuickSight (for BI), Connect (for contact centers), EC2, VPC, CodeCatalyst, and AWS Chatbot."
+    },
+    {
+      "id": 5,
+      "question": "What does Amazon Rekognition primarily do?",
+      "options": ["Convert speech to text", "Analyze images and videos to detect objects, people, and activities", "Translate languages", "Generate images from text"],
+      "correctAnswer": ["Analyze images and videos to detect objects, people, and activities"],
+      "category": "Computer Vision",
+      "explanation": "Amazon Rekognition analyzes images and videos to detect objects, people, text, scenes, activities, faces, and inappropriate content using computer vision."
+    },
+    {
+      "id": 6,
+      "question": "Which service would you use to convert text into lifelike speech?",
+      "options": ["Amazon Transcribe", "Amazon Polly", "Amazon Lex", "Amazon Comprehend"],
+      "correctAnswer": ["Amazon Polly"],
+      "category": "Language & Speech",
+      "explanation": "Amazon Polly converts text into lifelike speech in multiple languages and voices using deep learning technology."
+    },
+    {
+      "id": 7,
+      "question": "What is the main function of Amazon Textract?",
+      "options": ["Translate documents between languages", "Extract text, handwriting, and data from scanned documents", "Compress PDF files", "Create document templates"],
+      "correctAnswer": ["Extract text, handwriting, and data from scanned documents"],
+      "category": "Document Processing",
+      "explanation": "Amazon Textract automatically extracts text, handwriting, tables, and data from scanned documents using machine learning."
+    },
+    {
+      "id": 8,
+      "question": "Which SageMaker service is used to detect bias in ML models and explain predictions?",
+      "options": ["SageMaker Debugger", "SageMaker Clarify", "SageMaker Monitor", "SageMaker Experiments"],
+      "correctAnswer": ["SageMaker Clarify"],
+      "category": "SageMaker Platform",
+      "explanation": "SageMaker Clarify is specifically designed to detect bias in ML models and provide explanations for predictions to ensure transparency and fairness."
+    },
+    {
+      "id": 9,
+      "question": "What type of AI does Amazon PartyRock help users learn?",
+      "options": ["Computer Vision", "Generative AI", "Reinforcement Learning", "Speech Recognition"],
+      "correctAnswer": ["Generative AI"],
+      "category": "Generative AI",
+      "explanation": "Amazon PartyRock is a hands-on, code-free app builder designed for learning generative AI and experimenting with prompt engineering techniques."
+    },
+    {
+      "id": 10,
+      "question": "Which AWS service provides intelligent enterprise search powered by machine learning?",
+      "options": ["Amazon Athena", "Amazon Kendra", "Amazon Elasticsearch", "Amazon CloudSearch"],
+      "correctAnswer": ["Amazon Kendra"],
+      "category": "Search & Discovery",
+      "explanation": "Amazon Kendra is an intelligent enterprise search service powered by machine learning that provides accurate document search capabilities."
+    },
+    {
+      "id": 11,
+      "question": "What is the purpose of Amazon Forecast?",
+      "options": ["Weather prediction", "Time-series forecasting for business metrics", "Network traffic prediction", "Stock market analysis"],
+      "correctAnswer": ["Time-series forecasting for business metrics"],
+      "category": "Forecasting & Anomaly Detection",
+      "explanation": "Amazon Forecast builds accurate time-series forecasting models for business metrics like sales, demand, and inventory planning."
+    },
+    {
+      "id": 12,
+      "question": "Which services are part of the Amazon SageMaker data preparation toolkit? (Select all that apply)",
+      "options": ["SageMaker Data Wrangler", "SageMaker Ground Truth", "SageMaker Feature Store", "SageMaker Polly"],
+      "correctAnswer": ["SageMaker Data Wrangler", "SageMaker Ground Truth", "SageMaker Feature Store"],
+      "category": "SageMaker Platform",
+      "explanation": "SageMaker Data Wrangler prepares data, Ground Truth creates labeled datasets, and Feature Store manages ML features. SageMaker Polly doesn't exist - Polly is a separate text-to-speech service."
+    },
+    {
+      "id": 13,
+      "question": "What does Amazon Lex enable you to build?",
+      "options": ["Machine learning models", "Conversational interfaces (chatbots)", "Data warehouses", "Mobile applications"],
+      "correctAnswer": ["Conversational interfaces (chatbots)"],
+      "category": "Language & Speech",
+      "explanation": "Amazon Lex enables building conversational interfaces (chatbots) using voice and text, powered by the same technology as Alexa."
+    },
+    {
+      "id": 14,
+      "question": "Which AWS service automatically detects fraudulent online activities?",
+      "options": ["Amazon Macie", "Amazon GuardDuty", "Amazon Fraud Detector", "Amazon Inspector"],
+      "correctAnswer": ["Amazon Fraud Detector"],
+      "category": "Forecasting & Anomaly Detection",
+      "explanation": "Amazon Fraud Detector uses machine learning to identify potentially fraudulent online activities such as fake accounts and payment fraud."
+    },
+    {
+      "id": 15,
+      "question": "What is AWS Trainium designed for?",
+      "options": ["ML model inference", "ML model training", "Data storage", "Network optimization"],
+      "correctAnswer": ["ML model training"],
+      "category": "Infrastructure & Compute",
+      "explanation": "AWS Trainium is a purpose-built ML training chip designed for cost-effective deep learning model training."
+    },
+    {
+      "id": 16,
+      "question": "Which service converts speech to text automatically?",
+      "options": ["Amazon Polly", "Amazon Transcribe", "Amazon Translate", "Amazon Comprehend"],
+      "correctAnswer": ["Amazon Transcribe"],
+      "category": "Language & Speech",
+      "explanation": "Amazon Transcribe is an automatic speech recognition service that converts audio and video to text with features like speaker identification."
+    },
+    {
+      "id": 17,
+      "question": "What does Amazon Comprehend Medical do?",
+      "options": ["Diagnose diseases", "Extract medical information from clinical text", "Store patient records", "Schedule appointments"],
+      "correctAnswer": ["Extract medical information from clinical text"],
+      "category": "Healthcare & Life Sciences",
+      "explanation": "Amazon Comprehend Medical extracts medical information from unstructured clinical text for healthcare applications using NLP."
+    },
+    {
+      "id": 18,
+      "question": "Which AWS AI services are specifically designed for learning? (Select all that apply)",
+      "options": ["AWS DeepRacer", "AWS DeepComposer", "AWS DeepLens", "AWS DeepSearch"],
+      "correctAnswer": ["AWS DeepRacer", "AWS DeepComposer", "AWS DeepLens"],
+      "category": "Learning & Educational Tools",
+      "explanation": "DeepRacer teaches reinforcement learning, DeepComposer teaches generative AI through music, and DeepLens teaches computer vision. DeepSearch doesn't exist."
+    },
+    {
+      "id": 19,
+      "question": "What is the main purpose of Amazon Personalize?",
+      "options": ["Personalize user interfaces", "Create real-time personalized recommendations", "Customize AWS dashboards", "Personal assistant for users"],
+      "correctAnswer": ["Create real-time personalized recommendations"],
+      "category": "Search & Discovery",
+      "explanation": "Amazon Personalize creates real-time personalized recommendations and user segmentation for customers, commonly used in e-commerce and streaming."
+    },
+    {
+      "id": 20,
+      "question": "Which service helps optimize ML models for edge device deployment?",
+      "options": ["SageMaker Edge Manager", "SageMaker Neo", "AWS IoT Core", "Amazon Lookout for Equipment"],
+      "correctAnswer": ["SageMaker Neo"],
+      "category": "SageMaker Platform",
+      "explanation": "SageMaker Neo optimizes ML models for deployment on edge devices and reduces inference costs by compiling models for specific hardware."
+    },
+    {
+      "id": 21,
+      "question": "What does AWS HealthLake provide?",
+      "options": ["Medical diagnosis AI", "HIPAA-compliant storage and analysis of health data", "Hospital management system", "Patient scheduling"],
+      "correctAnswer": ["HIPAA-compliant storage and analysis of health data"],
+      "category": "Healthcare & Life Sciences",
+      "explanation": "AWS HealthLake is a HIPAA-compliant service to store, transform, query, and analyze health data at petabyte scale using the FHIR standard."
+    },
+    {
+      "id": 22,
+      "question": "Which services detect anomalies and abnormal behavior? (Select all that apply)",
+      "options": ["Amazon Lookout for Metrics", "Amazon Lookout for Equipment", "Amazon Monitron", "Amazon Lookout for Code"],
+      "correctAnswer": ["Amazon Lookout for Metrics", "Amazon Lookout for Equipment", "Amazon Monitron"],
+      "category": "Forecasting & Anomaly Detection",
+      "explanation": "Lookout for Metrics detects anomalies in business metrics, Lookout for Equipment monitors industrial equipment, and Monitron provides end-to-end predictive maintenance. Lookout for Code doesn't exist."
+    },
+    {
+      "id": 23,
+      "question": "What is Amazon CodeGuru used for?",
+      "options": ["Writing code automatically", "Automated code reviews and performance recommendations", "Deploying applications", "Managing databases"],
+      "correctAnswer": ["Automated code reviews and performance recommendations"],
+      "category": "Developer Tools & Code Quality",
+      "explanation": "Amazon CodeGuru provides automated code reviews to identify bugs, security vulnerabilities, and performance recommendations for Java and Python applications."
+    },
+    {
+      "id": 24,
+      "question": "Which service provides natural language processing to extract insights from text?",
+      "options": ["Amazon Textract", "Amazon Comprehend", "Amazon Transcribe", "Amazon Translate"],
+      "correctAnswer": ["Amazon Comprehend"],
+      "category": "Language & Speech",
+      "explanation": "Amazon Comprehend is a natural language processing service that extracts insights, entities, sentiment, and relationships from text."
+    },
+    {
+      "id": 25,
+      "question": "What is SageMaker HyperPod designed for?",
+      "options": ["Running Kubernetes pods", "Purpose-built infrastructure for foundation model training", "Hyperparameter tuning", "Creating Docker containers"],
+      "correctAnswer": ["Purpose-built infrastructure for foundation model training"],
+      "category": "SageMaker Platform",
+      "explanation": "SageMaker HyperPod is purpose-built infrastructure for foundation model training, providing 40% faster training times with resilient clusters."
+    },
+    {
+      "id": 26,
+      "question": "Which AWS service enables computer vision applications at the edge?",
+      "options": ["AWS Panorama", "Amazon Rekognition", "AWS DeepLens", "Amazon Lookout for Vision"],
+      "correctAnswer": ["AWS Panorama"],
+      "category": "Computer Vision",
+      "explanation": "AWS Panorama enables computer vision applications at the edge to improve operations with real-time video analytics on existing cameras."
+    },
+    {
+      "id": 27,
+      "question": "What does Amazon Augmented AI (A2I) allow you to build?",
+      "options": ["AI models from scratch", "Human review workflows for ML predictions", "Augmented reality applications", "Automated testing frameworks"],
+      "correctAnswer": ["Human review workflows for ML predictions"],
+      "category": "Document Processing",
+      "explanation": "Amazon Augmented AI (A2I) allows you to build human review workflows for machine learning predictions and quality control when needed."
+    },
+    {
+      "id": 28,
+      "question": "Which chip is optimized for ML inference on AWS?",
+      "options": ["AWS Trainium", "AWS Inferentia", "AWS Graviton", "AWS Nitro"],
+      "correctAnswer": ["AWS Inferentia"],
+      "category": "Infrastructure & Compute",
+      "explanation": "AWS Inferentia is a high-performance ML inference chip optimized for deploying models at scale cost-effectively. Trainium is for training, not inference."
+    },
+    {
+      "id": 29,
+      "question": "What capabilities does Amazon Q in QuickSight provide?",
+      "options": ["Database optimization", "Creating BI dashboards using natural language", "Image generation", "Code compilation"],
+      "correctAnswer": ["Creating BI dashboards using natural language"],
+      "category": "Amazon Q",
+      "explanation": "Amazon Q in QuickSight enables users to create BI dashboards and visualizations using natural language queries without technical expertise."
+    },
+    {
+      "id": 30,
+      "question": "Which services are part of SageMaker's model deployment and monitoring? (Select all that apply)",
+      "options": ["SageMaker Inference", "SageMaker Model Monitor", "SageMaker Pipelines", "SageMaker Translate"],
+      "correctAnswer": ["SageMaker Inference", "SageMaker Model Monitor", "SageMaker Pipelines"],
+      "category": "SageMaker Platform",
+      "explanation": "SageMaker Inference deploys models, Model Monitor tracks model quality in production, and Pipelines orchestrates ML workflows. SageMaker Translate doesn't exist - Translate is a separate language service."
+    }
+  ]
+}
