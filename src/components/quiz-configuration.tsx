@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 export function QuizConfiguration() {
   const router = useRouter();
   const [quiz, setQuiz] = useState<Quiz | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(['all']);
   const [questionCount, setQuestionCount] = useState<number>(5);
   const [categories, setCategories] = useState<string[]>([]);
   const [maxQuestions, setMaxQuestions] = useState<number>(0);
@@ -33,12 +33,30 @@ export function QuizConfiguration() {
   }, [router]);
 
   const handleCategoryChange = useCallback((category: string) => {
-    setSelectedCategory(category);
-    const availableQuestions = category === 'all'
-      ? quiz!.metadata.totalQuestions
-      : quiz!.questions.filter(q => q.category === category).length;
-    setMaxQuestions(availableQuestions);
-    setQuestionCount(Math.min(questionCount, availableQuestions));
+    setSelectedCategories(prev => {
+      let newCategories: string[];
+      if (category === 'all') {
+        // If 'all' is selected, deselect everything else
+        newCategories = ['all'];
+      } else if (prev.includes(category)) {
+        // If category is already selected, remove it
+        newCategories = prev.filter(c => c !== category);
+        if (newCategories.length === 0) newCategories = ['all'];
+      } else {
+        // If category is not selected, add it and remove 'all'
+        newCategories = prev.filter(c => c !== 'all').concat(category);
+      }
+      
+      // Calculate available questions
+      const availableQuestions = newCategories.includes('all')
+        ? quiz!.metadata.totalQuestions
+        : quiz!.questions.filter(q => newCategories.includes(q.category)).length;
+      
+      setMaxQuestions(availableQuestions);
+      setQuestionCount(Math.min(questionCount, availableQuestions));
+      
+      return newCategories;
+    });
   }, [quiz, questionCount]);
 
   const handleQuestionCountChange = useCallback((count: number) => {
@@ -48,8 +66,20 @@ export function QuizConfiguration() {
   const handleStartQuiz = useCallback(() => {
     if (!quiz) return;
 
-    const category = selectedCategory === 'all' ? undefined : selectedCategory;
-    const shuffledQuiz = quizUtils.createShuffledQuiz(quiz, questionCount, category);
+    // Create a quiz with selected categories
+    let filteredQuestions = quiz.questions;
+    if (!selectedCategories.includes('all')) {
+      filteredQuestions = quiz.questions.filter(q => selectedCategories.includes(q.category));
+    }
+
+    const shuffledQuiz = {
+      ...quiz,
+      questions: quizUtils.shuffle(filteredQuestions).slice(0, questionCount).map(q => ({
+        ...q,
+        options: quizUtils.shuffle(q.options)
+      }))
+    };
+
     storage.saveActiveQuiz(shuffledQuiz);
     
     // Save initial quiz state with timer configuration
@@ -62,7 +92,7 @@ export function QuizConfiguration() {
     });
     
     router.push('/quiz');
-  }, [quiz, selectedCategory, questionCount, durationInMinutes, router]);
+  }, [quiz, selectedCategories, questionCount, durationInMinutes, router]);
 
   if (!quiz) {
     return null;
@@ -98,7 +128,7 @@ export function QuizConfiguration() {
               {categories.map((category) => (
                 <Button
                   key={category}
-                  variant={selectedCategory === category ? 'default' : 'outline'}
+                  variant={selectedCategories.includes(category) ? 'default' : 'outline'}
                   onClick={() => handleCategoryChange(category)}
                   className="capitalize"
                 >
