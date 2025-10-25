@@ -17,7 +17,7 @@ export function Confetti({ score }: ConfettiProps) {
         return Math.random() * (max - min) + min;
       }
 
-      const interval: NodeJS.Timer = setInterval(function() {
+          const interval = setInterval(function() {
         const timeLeft = animationEnd - Date.now();
 
         if (timeLeft <= 0) {
