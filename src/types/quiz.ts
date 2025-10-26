@@ -26,6 +26,7 @@ export interface QuizState {
   isComplete: boolean;
   startTime?: number;
   durationInMinutes?: number;
+  submittedQuestions: Record<number, boolean>;
 }
 
 export interface QuizResults {

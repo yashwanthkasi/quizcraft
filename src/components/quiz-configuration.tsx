@@ -88,7 +88,8 @@ export function QuizConfiguration() {
       answers: {},
       isComplete: false,
       startTime: Date.now(),
-      durationInMinutes
+      durationInMinutes,
+      submittedQuestions: {}
     });
     
     router.push('/quiz');

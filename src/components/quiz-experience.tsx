@@ -18,6 +18,7 @@ export function QuizExperience() {
     currentQuestionIndex: 0,
     answers: {},
     isComplete: false,
+    submittedQuestions: {},
   });
 
   useEffect(() => {
@@ -44,6 +45,10 @@ export function QuizExperience() {
         answers: {
           ...prev.answers,
           [quiz.questions[prev.currentQuestionIndex].id]: selectedOptions
+        },
+        submittedQuestions: {
+          ...prev.submittedQuestions,
+          [quiz.questions[prev.currentQuestionIndex].id]: true
         }
       };
       storage.saveQuizState(newState);
@@ -142,7 +147,10 @@ export function QuizExperience() {
               <div className="space-y-3">
                 {currentQuestion.options.map((option) => {
                   const isMultipleChoice = currentQuestion.correctAnswer.length > 1;
+                  const isSubmitted = currentState.submittedQuestions[currentQuestion.id];
+                  const isCorrectOption = currentQuestion.correctAnswer.includes(option);
                   const handleClick = () => {
+                    if (isSubmitted) return;
                     if (isMultipleChoice) {
                       const newAnswers = currentAnswer.includes(option)
                         ? currentAnswer.filter(ans => ans !== option)
@@ -157,8 +165,15 @@ export function QuizExperience() {
                     <button
                       key={option}
                       onClick={handleClick}
+                      disabled={isSubmitted}
                       className={`w-full p-4 text-left rounded-lg transition-all flex items-center ${
-                        currentAnswer.includes(option)
+                        isSubmitted
+                          ? isCorrectOption
+                            ? 'bg-green-100 border-2 border-green-500'
+                            : currentAnswer.includes(option)
+                            ? 'bg-red-100 border-2 border-red-500'
+                            : 'bg-gray-50 border-2 border-transparent opacity-70'
+                          : currentAnswer.includes(option)
                           ? 'bg-primary-100 border-2 border-primary-500'
                           : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
                       }`}
@@ -166,11 +181,17 @@ export function QuizExperience() {
                       <div className={`mr-3 w-5 h-5 flex items-center justify-center border-2 rounded ${
                         isMultipleChoice ? 'rounded' : 'rounded-full'
                       } ${
-                        currentAnswer.includes(option)
+                        isSubmitted
+                          ? isCorrectOption
+                            ? 'border-green-500 bg-green-500'
+                            : currentAnswer.includes(option)
+                            ? 'border-red-500 bg-red-500'
+                            : 'border-gray-300'
+                          : currentAnswer.includes(option)
                           ? 'border-primary-500 bg-primary-500'
                           : 'border-gray-300'
                       }`}>
-                        {currentAnswer.includes(option) && (
+                        {currentAnswer.includes(option) && !isSubmitted && (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-3 w-3 text-white"
@@ -184,12 +205,70 @@ export function QuizExperience() {
                             />
                           </svg>
                         )}
+                        {isSubmitted && (isCorrectOption || currentAnswer.includes(option)) && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            {isCorrectOption ? (
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            ) : (
+                              <path
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                              />
+                            )}
+                          </svg>
+                        )}
                       </div>
-                      {option}
+                      <div className="flex-1">
+                        <span>{option}</span>
+                        {isSubmitted && (
+                          <span className={`ml-2 text-sm ${
+                            isCorrectOption ? 'text-green-600' : currentAnswer.includes(option) ? 'text-red-600' : ''
+                          }`}>
+                            {isCorrectOption && '(Correct Answer)'}
+                            {!isCorrectOption && currentAnswer.includes(option) && '(Incorrect)'}
+                          </span>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
               </div>
+              
+              {/* Feedback Section */}
+              {currentState.submittedQuestions[currentQuestion.id] && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-6"
+                >
+                  <div className="border-l-4 border-primary-500 pl-4 py-1 mb-4">
+                    <div className="font-medium text-lg mb-1">
+                      {currentAnswer.sort().join(',') === currentQuestion.correctAnswer.sort().join(',') ? (
+                        <span className="text-green-600">✅ Correct!</span>
+                      ) : (
+                        <span className="text-red-600">❌ Incorrect</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-medium text-lg mb-2 text-gray-800">Explanation</h3>
+                    <p className="text-gray-600">
+                      {currentQuestion.explanation}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button
@@ -200,18 +279,32 @@ export function QuizExperience() {
                 <ArrowLeftIcon className="h-4 w-4 mr-2" />
                 Previous
               </Button>
-              {isLastQuestion ? (
-                <Button onClick={handleSubmit}>
-                  Submit Quiz
-                </Button>
-              ) : (
-                <Button 
-                  onClick={() => navigate('next')}
-                  disabled={!currentAnswer.length}
-                >
-                  Next
-                  <ArrowRightIcon className="h-4 w-4 ml-2" />
-                </Button>
+              
+              {currentAnswer.length > 0 && (
+                isLastQuestion ? (
+                  currentState.submittedQuestions[currentQuestion.id] ? (
+                    <Button onClick={handleSubmit}>
+                      Finish Quiz
+                    </Button>
+                  ) : (
+                    <Button onClick={() => handleAnswer(currentAnswer)}>
+                      Submit Answer
+                    </Button>
+                  )
+                ) : (
+                  <Button 
+                    onClick={() => {
+                      if (!currentState.submittedQuestions[currentQuestion.id]) {
+                        handleAnswer(currentAnswer);
+                      } else {
+                        navigate('next');
+                      }
+                    }}
+                  >
+                    {currentState.submittedQuestions[currentQuestion.id] ? 'Next Question' : 'Submit & Next'}
+                    <ArrowRightIcon className="h-4 w-4 ml-2" />
+                  </Button>
+                )
               )}
             </CardFooter>
           </Card>
