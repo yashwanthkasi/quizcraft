@@ -2146,3 +2146,1163 @@ export const AWSAISERVICESQUIZ: Quiz = {
     }
   ]
 }
+
+export const SPRINGCORE: Quiz = {
+  "metadata": {
+    "title": "Spring Boot Core Concepts & Advanced Configuration",
+    "version": "1.0",
+    "totalQuestions": 15,
+    "description": "Advanced quiz covering Spring Boot internals, auto-configuration, and complex configuration scenarios"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "When using @ConditionalOnProperty with matchIfMissing=true, what happens if the property is defined but has an empty string value?",
+      "options": [
+        "The condition matches because empty string is treated as missing",
+        "The condition fails because empty string is considered as defined",
+        "It throws a PropertyNotFoundException",
+        "The behavior depends on the havingValue attribute"
+      ],
+      "correctAnswer": ["The condition fails because empty string is considered as defined"],
+      "category": "Auto-Configuration",
+      "explanation": "When matchIfMissing=true, the condition only matches if the property is completely absent. An empty string is still considered a defined value, so the condition would fail unless havingValue is also set to empty string."
+    },
+    {
+      "id": 2,
+      "question": "In Spring Boot, if you have multiple @ConfigurationProperties beans with the same prefix, and relaxed binding is enabled, which bean gets priority during property binding?",
+      "options": [
+        "The bean declared first in component scanning order",
+        "This scenario throws a BeanDefinitionOverrideException by default",
+        "The last bean registered in the application context",
+        "All beans receive the same properties independently"
+      ],
+      "correctAnswer": ["All beans receive the same properties independently"],
+      "category": "Configuration Properties",
+      "explanation": "Multiple @ConfigurationProperties beans can have the same prefix. Each bean independently binds to the same properties. There's no conflict because they're separate instances, not overriding bean definitions."
+    },
+    {
+      "id": 3,
+      "question": "What is the order of property source precedence when a property is defined in application.yml, environment variable, and command line argument (lowest to highest)?",
+      "options": [
+        "application.yml → environment variable → command line",
+        "environment variable → application.yml → command line",
+        "command line → environment variable → application.yml",
+        "application.yml → command line → environment variable"
+      ],
+      "correctAnswer": ["application.yml → environment variable → command line"],
+      "category": "Configuration",
+      "explanation": "Spring Boot property sources follow a specific precedence: command line arguments have the highest priority, followed by environment variables, then application properties files. Higher priority sources override lower ones."
+    },
+    {
+      "id": 4,
+      "question": "When using @Async in Spring Boot, what happens if the method returns a CompletableFuture and throws an exception before the async execution starts?",
+      "options": [
+        "The exception is wrapped in an ExecutionException and thrown to the caller",
+        "The exception is caught by the AsyncUncaughtExceptionHandler",
+        "A CompletableFuture with the exception is returned to the caller",
+        "The exception propagates directly to the caller synchronously"
+      ],
+      "correctAnswer": ["The exception propagates directly to the caller synchronously"],
+      "category": "Async Processing",
+      "explanation": "If an exception occurs before the async proxy can delegate to the executor, it happens synchronously in the caller's thread. The exception propagates directly without async handling mechanisms being involved."
+    },
+    {
+      "id": 5,
+      "question": "In Spring Boot's auto-configuration mechanism, what is the primary difference between @ConditionalOnBean and @ConditionalOnSingleCandidate?",
+      "options": [
+        "@ConditionalOnSingleCandidate requires exactly one bean while @ConditionalOnBean allows multiple",
+        "@ConditionalOnSingleCandidate allows multiple beans if one is marked @Primary, @ConditionalOnBean only checks existence",
+        "@ConditionalOnBean checks by type, @ConditionalOnSingleCandidate checks by name",
+        "They are functionally identical, @ConditionalOnSingleCandidate is deprecated"
+      ],
+      "correctAnswer": ["@ConditionalOnSingleCandidate allows multiple beans if one is marked @Primary, @ConditionalOnBean only checks existence"],
+      "category": "Auto-Configuration",
+      "explanation": "@ConditionalOnBean only checks if at least one bean exists. @ConditionalOnSingleCandidate is more specific - it passes if there's exactly one bean OR multiple beans with one marked as @Primary, making it suitable for autowiring scenarios."
+    },
+    {
+      "id": 6,
+      "question": "When using Spring Boot DevTools, which of the following changes will NOT trigger an automatic restart?",
+      "options": [
+        "Modifying a Java class in src/main/java",
+        "Adding a new dependency in pom.xml",
+        "Changing a property in application.properties",
+        "Modifying a static resource in src/main/resources/static"
+      ],
+      "correctAnswer": ["Modifying a static resource in src/main/resources/static"],
+      "category": "DevTools",
+      "explanation": "DevTools uses two classloaders: base (for dependencies) and restart (for application code). Static resources under /static, /public, /META-INF/resources, and /templates trigger live reload but not a restart, as they don't require recompilation."
+    },
+    {
+      "id": 7,
+      "question": "What happens when you use @Transactional on a private method in a Spring Boot application?",
+      "options": [
+        "It works correctly because Spring Boot uses CGLIB proxying by default",
+        "The transaction is not created because Spring AOP cannot proxy private methods",
+        "It throws a BeanInitializationException at startup",
+        "It works only if aspectj-weaver is on the classpath"
+      ],
+      "correctAnswer": ["The transaction is not created because Spring AOP cannot proxy private methods"],
+      "category": "Transactions",
+      "explanation": "Spring's @Transactional uses proxy-based AOP. Proxies intercept calls from outside the object. Private methods can only be called internally, so the proxy is bypassed. The annotation is silently ignored, and no transaction is created."
+    },
+    {
+      "id": 8,
+      "question": "In Spring Boot Actuator, if you set management.endpoints.web.exposure.include=*, but also set management.endpoint.health.show-details=never, who can see detailed health information?",
+      "options": [
+        "No one can see detailed health information",
+        "Only users with ACTUATOR role can see details",
+        "Users with ADMIN role can still see details",
+        "Details are shown when accessed from localhost only"
+      ],
+      "correctAnswer": ["No one can see detailed health information"],
+      "category": "Actuator",
+      "explanation": "The show-details property controls health detail visibility explicitly. When set to 'never', no detailed health information is shown regardless of exposure settings or user roles. The 'when-authorized' and 'always' values provide conditional or unconditional access."
+    },
+    {
+      "id": 9,
+      "question": "When using @SpringBootTest with WebEnvironment.RANDOM_PORT, and you inject a TestRestTemplate, what is the base URL configured in this template?",
+      "options": [
+        "http://localhost:8080",
+        "http://localhost with the random port assigned",
+        "null, you must configure it manually",
+        "http://127.0.0.1:0"
+      ],
+      "correctAnswer": ["http://localhost with the random port assigned"],
+      "category": "Testing",
+      "explanation": "When using WebEnvironment.RANDOM_PORT, Spring Boot automatically configures the injected TestRestTemplate with the correct base URL including the random port. This allows tests to make HTTP calls without manual configuration."
+    },
+    {
+      "id": 10,
+      "question": "If you define spring.jpa.hibernate.ddl-auto=create-drop in production, what is the most accurate description of what happens?",
+      "options": [
+        "Spring Boot ignores this setting in production profile automatically",
+        "Schema is created at startup and dropped at shutdown, potentially causing data loss",
+        "It throws a ConfigurationException preventing application startup",
+        "Hibernate switches to 'validate' mode automatically for safety"
+      ],
+      "correctAnswer": ["Schema is created at startup and dropped at shutdown, potentially causing data loss"],
+      "category": "JPA/Hibernate",
+      "explanation": "Hibernate respects the ddl-auto setting regardless of environment. 'create-drop' will drop and recreate the schema at startup and drop it at shutdown. There's no automatic safety mechanism - it's the developer's responsibility to use appropriate settings per environment."
+    },
+    {
+      "id": 11,
+      "question": "When using @Cacheable with a custom KeyGenerator, and the method has no parameters, what does Spring use as the cache key by default if you don't specify the key attribute?",
+      "options": [
+        "The method name as a String",
+        "An empty String",
+        "SimpleKey.EMPTY constant",
+        "A hash of the target class and method"
+      ],
+      "correctAnswer": ["SimpleKey.EMPTY constant"],
+      "category": "Caching",
+      "explanation": "For methods with no parameters, Spring's default key generation uses SimpleKey.EMPTY, a singleton empty key object. This is different from an empty string and ensures all no-arg method invocations of the same method share the same cache entry."
+    },
+    {
+      "id": 12,
+      "question": "In a Spring Boot application, if you declare a @Bean method that returns null, what happens?",
+      "options": [
+        "A BeanCreationException is thrown at startup",
+        "The bean is registered but injection requests will fail with NoSuchBeanDefinitionException",
+        "The bean definition is skipped entirely",
+        "A null bean is registered and can be injected as null"
+      ],
+      "correctAnswer": ["The bean is registered but injection requests will fail with NoSuchBeanDefinitionException"],
+      "category": "Bean Lifecycle",
+      "explanation": "When a @Bean method returns null, Spring registers the bean definition but with no actual instance. Later attempts to inject this bean will fail with NoSuchBeanDefinitionException because there's no bean instance available, even though the definition exists."
+    },
+    {
+      "id": 13,
+      "question": "What is the behavior when you use @Scheduled(fixedDelay=1000) on a method that takes 3000ms to execute?",
+      "options": [
+        "The method executes every 1000ms concurrently, creating multiple threads",
+        "The method executes again 1000ms after the previous execution completes (every 4000ms total)",
+        "Spring throws a SchedulingException due to the timing conflict",
+        "The fixedDelay is automatically adjusted to match the execution time"
+      ],
+      "correctAnswer": ["The method executes again 1000ms after the previous execution completes (every 4000ms total)"],
+      "category": "Scheduling",
+      "explanation": "fixedDelay measures the delay between the completion of one execution and the start of the next. If a method takes 3000ms and has fixedDelay=1000, the next execution starts 1000ms after completion, resulting in 4000ms between starts (3000ms execution + 1000ms delay)."
+    },
+    {
+      "id": 14,
+      "question": "When using @Value with SpEL, what is the result of @Value(\"#{null}\") when injecting into a String field?",
+      "options": [
+        "The String \"null\"",
+        "An empty String",
+        "A null reference",
+        "A BeanCreationException is thrown"
+      ],
+      "correctAnswer": ["A null reference"],
+      "category": "SpEL",
+      "explanation": "SpEL expression #{null} evaluates to a null reference, not the string \"null\". This is different from ${property} which would convert missing properties to strings. The actual null value is injected into the field."
+    },
+    {
+      "id": 15,
+      "question": "In Spring Boot, when using @ConfigurationProperties with constructor binding and validation annotations, at what point is the validation performed?",
+      "options": [
+        "During property binding, before the constructor is called",
+        "After the constructor completes, during bean initialization",
+        "Only when explicitly calling Validator.validate()",
+        "At compile time by the annotation processor"
+      ],
+      "correctAnswer": ["After the constructor completes, during bean initialization"],
+      "category": "Configuration Properties",
+      "explanation": "With constructor binding, properties are bound via constructor parameters, then the object is created. Validation annotations are processed after construction during the bean initialization phase, using the standard Bean Validation framework."
+    }
+  ]
+}
+
+export const SPRINGDATA :Quiz = {
+  "metadata": {
+    "title": "Spring Boot Data Access & JPA Deep Dive",
+    "version": "1.0",
+    "totalQuestions": 15,
+    "description": "Advanced quiz covering Spring Data JPA, query methods, transactions, and database optimization techniques"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "When using @Query with nativeQuery=true in Spring Data JPA, what happens if you use named parameters like :paramName instead of positional parameters?",
+      "options": [
+        "Named parameters work the same as in JPQL queries",
+        "It throws a InvalidDataAccessApiUsageException at runtime",
+        "Named parameters are converted to positional parameters automatically",
+        "It depends on the underlying database dialect support"
+      ],
+      "correctAnswer": ["It depends on the underlying database dialect support"],
+      "category": "Spring Data JPA",
+      "explanation": "Native queries with named parameters depend on the JPA provider and database. While Hibernate supports named parameters in native queries for some databases, the support varies by database. Positional parameters (?1, ?2) are more portable for native queries."
+    },
+    {
+      "id": 2,
+      "question": "What is the fetch behavior when you have a @OneToMany relationship with FetchType.LAZY and you serialize the parent entity to JSON using Jackson without additional configuration?",
+      "options": [
+        "The collection is fetched automatically and serialized",
+        "A LazyInitializationException is thrown",
+        "The collection is serialized as an empty array",
+        "Jackson ignores the collection property entirely"
+      ],
+      "correctAnswer": ["A LazyInitializationException is thrown"],
+      "category": "JPA/Hibernate",
+      "explanation": "With LAZY fetching, the collection proxy requires an active Hibernate session to initialize. During JSON serialization (outside the transaction), Jackson tries to access the collection, triggering lazy initialization without a session, causing LazyInitializationException."
+    },
+    {
+      "id": 3,
+      "question": "In Spring Data JPA, if you have a query method findByNameAndAge(String name, Integer age), and you pass null for the age parameter, what happens?",
+      "options": [
+        "It generates WHERE name = ? AND age IS NULL",
+        "It generates WHERE name = ? AND age = NULL (which returns no results)",
+        "It throws an IllegalArgumentException",
+        "It ignores the null parameter and generates WHERE name = ? only"
+      ],
+      "correctAnswer": ["It generates WHERE name = ? AND age = NULL (which returns no results)"],
+      "category": "Spring Data JPA",
+      "explanation": "Spring Data JPA translates null parameters directly into 'column = NULL' conditions, which is SQL syntax that never evaluates to true (NULL is not equal to anything, including NULL). This typically returns no results. Use IS NULL syntax or custom queries for null handling."
+    },
+    {
+      "id": 4,
+      "question": "When using @Transactional(propagation = Propagation.REQUIRES_NEW), what happens to the outer transaction if an exception occurs in the inner transaction and is caught by the caller?",
+      "options": [
+        "Both inner and outer transactions are rolled back",
+        "Only the inner transaction is rolled back, outer continues normally",
+        "The outer transaction is marked for rollback only",
+        "Depends on whether the exception is checked or unchecked"
+      ],
+      "correctAnswer": ["Only the inner transaction is rolled back, outer continues normally"],
+      "category": "Transactions",
+      "explanation": "REQUIRES_NEW creates a completely independent transaction. If the inner transaction fails and is caught, only it rolls back. The outer transaction is unaffected and can commit successfully. The transactions are isolated from each other."
+    },
+    {
+      "id": 5,
+      "question": "What is the N+1 query problem indicator when using @OneToMany with FetchType.EAGER and you query for 10 parent entities?",
+      "options": [
+        "1 query for parents + 10 queries for children = 11 total queries",
+        "1 query with JOIN FETCH automatically, no N+1 problem",
+        "10 queries (one per parent entity)",
+        "2 queries (one for parents, one batched for all children)"
+      ],
+      "correctAnswer": ["1 query for parents + 10 queries for children = 11 total queries"],
+      "category": "JPA/Hibernate",
+      "explanation": "With FetchType.EAGER, Hibernate first queries all parent entities, then for each parent, it executes a separate query to fetch its children. This creates the classic N+1 problem: 1 query for N parents + N queries for children (1+N=11 for 10 parents)."
+    },
+    {
+      "id": 6,
+      "question": "When using @Modifying with @Query for an UPDATE statement in Spring Data JPA, what happens to the persistence context after the query executes?",
+      "options": [
+        "The persistence context is automatically cleared",
+        "The persistence context remains unchanged with stale data",
+        "Only the updated entities are evicted from the context",
+        "Depends on the clearAutomatically attribute of @Modifying"
+      ],
+      "correctAnswer": ["Depends on the clearAutomatically attribute of @Modifying"],
+      "category": "Spring Data JPA",
+      "explanation": "@Modifying queries execute directly on the database, bypassing the persistence context. The clearAutomatically attribute (default false) controls whether the context is cleared. If false, cached entities remain stale. Setting it to true clears the context."
+    },
+    {
+      "id": 7,
+      "question": "In a bidirectional @OneToMany/@ManyToOne relationship, if you add a child to the parent's collection but forget to set the parent reference on the child, what happens when you save the parent with cascade=CascadeType.ALL?",
+      "options": [
+        "The child is saved with a null foreign key reference",
+        "A PropertyValueException is thrown",
+        "Hibernate automatically sets the parent reference",
+        "The child is not persisted at all"
+      ],
+      "correctAnswer": ["The child is saved with a null foreign key reference"],
+      "category": "JPA/Hibernate",
+      "explanation": "In bidirectional relationships, the @ManyToOne side (child) owns the relationship. If you only update the collection without setting the parent reference on the child, Hibernate saves the child but with null for the foreign key. You must maintain both sides."
+    },
+    {
+      "id": 8,
+      "question": "What is the result of calling entityManager.merge() on a detached entity that has been deleted from the database by another transaction?",
+      "options": [
+        "A new entity is created with the same ID",
+        "An EntityNotFoundException is thrown",
+        "The merge silently fails and returns null",
+        "An OptimisticLockException is thrown"
+      ],
+      "correctAnswer": ["A new entity is created with the same ID"],
+      "category": "JPA/Hibernate",
+      "explanation": "merge() attempts to find the entity by ID. If not found, it treats the detached entity as new and persists it, creating a new row with the same ID (if the ID generation strategy allows). This can lead to unexpected behavior and primary key violations."
+    },
+    {
+      "id": 9,
+      "question": "When using @Version for optimistic locking, what happens if you manually set the version field value before updating an entity?",
+      "options": [
+        "Hibernate ignores your version value and uses its own",
+        "Your version value is used, potentially causing incorrect locking behavior",
+        "A StaleObjectStateException is thrown immediately",
+        "The version field is reset to null"
+      ],
+      "correctAnswer": ["Your version value is used, potentially causing incorrect locking behavior"],
+      "category": "JPA/Hibernate",
+      "explanation": "If you manually modify the version field, Hibernate uses that value in the WHERE clause of the UPDATE statement. This can break optimistic locking by creating version mismatches or allowing updates that should fail. Hibernate trusts the version value you provide."
+    },
+    {
+      "id": 10,
+      "question": "In Spring Data JPA, what does the query method countByStatus(String status) return if no entities match the status?",
+      "options": [
+        "null",
+        "0 (zero)",
+        "Optional.empty()",
+        "throws EmptyResultDataAccessException"
+      ],
+      "correctAnswer": ["0 (zero)"],
+      "category": "Spring Data JPA",
+      "explanation": "Count queries always return a numeric value. If no entities match, the query returns 0, not null. This is different from find queries which can return null or Optional.empty(). COUNT in SQL never returns null."
+    },
+    {
+      "id": 11,
+      "question": "What happens when you use @Transactional(readOnly=true) and then perform an entity modification and flush within that transaction?",
+      "options": [
+        "A TransactionSystemException is thrown on flush",
+        "The modification is silently ignored",
+        "The modification succeeds if the database connection allows writes",
+        "Hibernate throws a ReadOnlyEntityException"
+      ],
+      "correctAnswer": ["The modification succeeds if the database connection allows writes"],
+      "category": "Transactions",
+      "explanation": "readOnly=true is a hint to the persistence provider and database. It may enable optimizations, but doesn't enforce read-only behavior at the JPA level. If the underlying database connection allows writes, the modification succeeds. Enforcement depends on database configuration."
+    },
+    {
+      "id": 12,
+      "question": "When using @EntityGraph with attributePaths to fetch associations, what is the default fetch type for paths specified in the graph?",
+      "options": [
+        "FetchType.LAZY",
+        "FetchType.EAGER",
+        "The fetch type from the entity annotation",
+        "Depends on the EntityGraph type (FETCH vs LOAD)"
+      ],
+      "correctAnswer": ["Depends on the EntityGraph type (FETCH vs LOAD)"],
+      "category": "JPA/Hibernate",
+      "explanation": "EntityGraphType.FETCH makes specified paths EAGER and all others LAZY. EntityGraphType.LOAD makes specified paths EAGER and respects the default fetch type for unspecified paths. The type parameter determines behavior, not a single default."
+    },
+    {
+      "id": 13,
+      "question": "In Spring Data JPA, if you define a custom query with @Query that returns a projection interface, but misspell a property name in the SELECT clause, when does the error occur?",
+      "options": [
+        "At application startup during repository initialization",
+        "At compile time via annotation processing",
+        "At runtime when the query is first executed",
+        "Never, Spring Data ignores mismatched properties"
+      ],
+      "correctAnswer": ["At runtime when the query is first executed"],
+      "category": "Spring Data JPA",
+      "explanation": "Projection validation for custom queries happens lazily at runtime. Spring Data JPA doesn't validate projection mappings at startup. When the query executes, if it can't map results to the projection interface, it throws an exception."
+    },
+    {
+      "id": 14,
+      "question": "What is the behavior of calling entityManager.persist() on an entity that already has an ID value set but doesn't exist in the database?",
+      "options": [
+        "persist() throws an EntityExistsException",
+        "persist() treats it as new and attempts to insert, potentially causing a constraint violation",
+        "persist() performs a merge operation instead",
+        "Hibernate checks the database and converts to an update if not found"
+      ],
+      "correctAnswer": ["persist() treats it as new and attempts to insert, potentially causing a constraint violation"],
+      "category": "JPA/Hibernate",
+      "explanation": "persist() assumes the entity is new and schedules an INSERT regardless of the ID value. It doesn't check the database. If the ID exists, you get a constraint violation. If the ID doesn't exist but is manually set, it attempts insert with that ID."
+    },
+    {
+      "id": 15,
+      "question": "When using @Query with a JOIN FETCH in Spring Data JPA and pageable parameter, what is the limitation?",
+      "options": [
+        "Pagination works correctly with in-memory filtering",
+        "Hibernate throws a QueryExecutionException",
+        "Pagination is performed in memory after fetching all results, potentially causing performance issues",
+        "JOIN FETCH is automatically converted to a regular JOIN"
+      ],
+      "correctAnswer": ["Pagination is performed in memory after fetching all results, potentially causing performance issues"],
+      "category": "Spring Data JPA",
+      "explanation": "JOIN FETCH with pagination creates a warning because Hibernate can't paginate at the database level when fetching collections (due to cartesian product). It fetches all results into memory and then applies pagination, which defeats the purpose and can cause OutOfMemoryError."
+    }
+  ]
+}
+
+export const SPRINGREST : Quiz = {
+  "metadata": {
+    "title": "Spring Boot REST APIs, Security & Microservices",
+    "version": "1.0",
+    "totalQuestions": 15,
+    "description": "Advanced quiz covering REST API design, Spring Security, exception handling, and microservices patterns in Spring Boot"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "When using @RestControllerAdvice with @ExceptionHandler, and multiple handlers can handle the same exception (one for specific exception, one for its parent), which handler is invoked?",
+      "options": [
+        "The first handler registered in the application context",
+        "The most specific exception handler (closest match in inheritance hierarchy)",
+        "Both handlers are invoked in sequence",
+        "Spring throws an AmbiguousExceptionHandlerException"
+      ],
+      "correctAnswer": ["The most specific exception handler (closest match in inheritance hierarchy)"],
+      "category": "Exception Handling",
+      "explanation": "Spring uses a best-match algorithm based on exception hierarchy. The most specific exception handler (the one matching the exception class most closely in the inheritance tree) is selected. If MyException extends RuntimeException, a handler for MyException is chosen over one for RuntimeException."
+    },
+    {
+      "id": 2,
+      "question": "In Spring Security, when using .authorizeHttpRequests() with multiple antMatchers, and a request matches multiple patterns, which rule is applied?",
+      "options": [
+        "The most specific pattern takes precedence",
+        "All matching rules must be satisfied (AND logic)",
+        "The first matching rule in declaration order is applied",
+        "The most restrictive rule among matches is applied"
+      ],
+      "correctAnswer": ["The first matching rule in declaration order is applied"],
+      "category": "Spring Security",
+      "explanation": "Spring Security processes authorization rules in the order they are declared. Once a request matches a pattern, that rule is applied and evaluation stops. This is why you must declare more specific patterns before general ones (e.g., /admin/** before /**)."
+    },
+    {
+      "id": 3,
+      "question": "When using @Validated on a controller class and @Valid on a method parameter, what happens if validation fails?",
+      "options": [
+        "A MethodArgumentNotValidException is thrown",
+        "A ConstraintViolationException is thrown",
+        "The method returns null automatically",
+        "It depends on whether the parameter is a request body or request parameter"
+      ],
+      "correctAnswer": ["It depends on whether the parameter is a request body or request parameter"],
+      "category": "Validation",
+      "explanation": "@Valid on @RequestBody parameters throws MethodArgumentNotValidException. @Validated on the class enables method-level validation for @RequestParam/@PathVariable which throws ConstraintViolationException. The exception type depends on what's being validated."
+    },
+    {
+      "id": 4,
+      "question": "What is the default behavior when a @RestController method returns null?",
+      "options": [
+        "HTTP 204 No Content response",
+        "HTTP 200 with empty body",
+        "HTTP 404 Not Found",
+        "NullPointerException is thrown"
+      ],
+      "correctAnswer": ["HTTP 200 with empty body"],
+      "category": "REST APIs",
+      "explanation": "When a @RestController method returns null, Spring MVC returns HTTP 200 OK with an empty response body. To return 204 No Content, use ResponseEntity<Void> or add @ResponseStatus(HttpStatus.NO_CONTENT). Null doesn't automatically mean 404."
+    },
+    {
+      "id": 5,
+      "question": "In JWT-based Spring Security, if a user's roles change in the database while they have a valid JWT token, what happens on their next authenticated request?",
+      "options": [
+        "The request fails with a 401 Unauthorized",
+        "The new roles are automatically applied from the database",
+        "The old roles from the JWT are still used until token expiration",
+        "The token is automatically refreshed with new roles"
+      ],
+      "correctAnswer": ["The old roles from the JWT are still used until token expiration"],
+      "category": "Spring Security",
+      "explanation": "JWT tokens are self-contained and stateless. The roles/authorities are encoded in the token at creation time. Changes to user permissions in the database won't affect existing valid tokens. The token must expire or be explicitly revoked for changes to take effect."
+    },
+    {
+      "id": 6,
+      "question": "When using @RequestBody with a List<MyObject>, what happens if the client sends an empty JSON array []?",
+      "options": [
+        "The method parameter is null",
+        "An empty List is passed to the method",
+        "A HttpMessageNotReadableException is thrown",
+        "A MethodArgumentNotValidException is thrown"
+      ],
+      "correctAnswer": ["An empty List is passed to the method"],
+      "category": "REST APIs",
+      "explanation": "An empty JSON array [] is valid JSON and deserializes to an empty List, not null. Spring MVC passes this empty list to the method. If you need to reject empty lists, add validation constraints like @NotEmpty or @Size(min=1)."
+    },
+    {
+      "id": 7,
+      "question": "What happens when you use @PreAuthorize on a method that is called internally (same class) by another method?",
+      "options": [
+        "The authorization check is performed normally",
+        "The authorization check is skipped because it's an internal call",
+        "A SecurityException is thrown",
+        "It depends on the proxy mode (JDK vs CGLIB)"
+      ],
+      "correctAnswer": ["The authorization check is skipped because it's an internal call"],
+      "category": "Spring Security",
+      "explanation": "@PreAuthorize uses Spring AOP proxies. Internal method calls (this.method()) bypass the proxy and go directly to the target object, skipping all AOP advice including security checks. The caller must go through the proxy for authorization to work."
+    },
+    {
+      "id": 8,
+      "question": "In a Spring Cloud microservices architecture using Feign Client, what happens when the target service returns HTTP 404?",
+      "options": [
+        "Feign returns null by default",
+        "A FeignException with status 404 is thrown",
+        "An Optional.empty() is returned",
+        "Feign retries the request automatically"
+      ],
+      "correctAnswer": ["A FeignException with status 404 is thrown"],
+      "category": "Microservices",
+      "explanation": "By default, Feign treats 4xx and 5xx responses as errors and throws FeignException. To handle 404 differently, you must configure a custom ErrorDecoder. Feign doesn't return null or Optional automatically for error responses."
+    },
+    {
+      "id": 9,
+      "question": "When using @CrossOrigin on a controller method with Spring Security enabled, but CORS is not configured in the security chain, what happens to preflight OPTIONS requests?",
+      "options": [
+        "They are handled correctly by @CrossOrigin annotation",
+        "They are blocked by Spring Security with 403 Forbidden",
+        "They return 200 OK but CORS headers are missing",
+        "Spring Security automatically configures CORS"
+      ],
+      "correctAnswer": ["They are blocked by Spring Security with 403 Forbidden"],
+      "category": "Spring Security",
+      "explanation": "Spring Security filters execute before @CrossOrigin processing. Preflight OPTIONS requests require authentication if CORS isn't configured in the security chain. You must explicitly configure .cors() in HttpSecurity to allow preflight requests to bypass security filters."
+    },
+    {
+      "id": 10,
+      "question": "What is the difference between @ResponseStatus on an exception class and using ResponseEntity in @ExceptionHandler?",
+      "options": [
+        "They are functionally identical",
+        "@ResponseStatus sets only status code, ResponseEntity allows full control over response",
+        "ResponseEntity is deprecated in favor of @ResponseStatus",
+        "@ResponseStatus works only with @RestControllerAdvice"
+      ],
+      "correctAnswer": ["@ResponseStatus sets only status code, ResponseEntity allows full control over response"],
+      "category": "Exception Handling",
+      "explanation": "@ResponseStatus on an exception class only sets the HTTP status code when that exception is thrown. ResponseEntity in @ExceptionHandler provides complete control: status, headers, and custom response body. ResponseEntity is more flexible for complex error responses."
+    },
+    {
+      "id": 11,
+      "question": "When using Spring Security's BCryptPasswordEncoder, what happens if you encode the same password multiple times?",
+      "options": [
+        "You get the same hash each time for consistency",
+        "You get different hashes each time due to random salt",
+        "The second encoding throws a DuplicatePasswordException",
+        "The hash is cached and reused automatically"
+      ],
+      "correctAnswer": ["You get different hashes each time due to random salt"],
+      "category": "Spring Security",
+      "explanation": "BCrypt generates a unique random salt for each encoding operation. The same password will produce different hashes each time. The salt is embedded in the hash output, so matches() can still verify passwords correctly despite different hashes."
+    },
+    {
+      "id": 12,
+      "question": "In Spring Boot REST API, when using @RequestParam with required=false and the parameter is not provided, what is the parameter value?",
+      "options": [
+        "An empty String \"\"",
+        "null",
+        "throws MissingServletRequestParameterException",
+        "The defaultValue if specified, otherwise null"
+      ],
+      "correctAnswer": ["The defaultValue if specified, otherwise null"],
+      "category": "REST APIs",
+      "explanation": "With required=false, a missing parameter results in null being passed to the method. If defaultValue is specified, that value is used instead of null. Without defaultValue, you must handle null. Empty string \"\" is different from missing parameter."
+    },
+    {
+      "id": 13,
+      "question": "What happens when you use @Async on a method secured with @PreAuthorize in Spring Boot?",
+      "options": [
+        "The security context is automatically propagated to the async thread",
+        "The security context is lost, causing authorization to fail",
+        "A SecurityException is thrown at method invocation",
+        "Security checks are performed on the calling thread before going async"
+      ],
+      "correctAnswer": ["Security checks are performed on the calling thread before going async"],
+      "category": "Spring Security",
+      "explanation": "@PreAuthorize is evaluated before the method executes, on the calling thread where security context exists. After authorization passes, execution becomes async. However, the SecurityContext is not automatically propagated to the async thread unless configured with MODE_INHERITABLETHREADLOCAL."
+    },
+    {
+      "id": 14,
+      "question": "When using @PathVariable with a regex pattern like @PathVariable(\"id\") String id in the mapping @GetMapping(\"/users/{id:[0-9]+}\"), what happens if a non-numeric id is provided?",
+      "options": [
+        "The method is called with the non-numeric string",
+        "A 404 Not Found is returned",
+        "A TypeMismatchException is thrown",
+        "A 400 Bad Request with validation error is returned"
+      ],
+      "correctAnswer": ["A 404 Not Found is returned"],
+      "category": "REST APIs",
+      "explanation": "The regex pattern in the path variable is part of the URL mapping. If the request doesn't match the pattern, Spring doesn't route to that handler at all - it's treated as if no mapping exists, resulting in 404. This happens before parameter binding."
+    },
+    {
+      "id": 15,
+      "question": "In a Circuit Breaker pattern using Resilience4j with Spring Boot, what is the state transition when failure rate threshold is exceeded?",
+      "options": [
+        "CLOSED → HALF_OPEN → OPEN",
+        "CLOSED → OPEN → HALF_OPEN",
+        "OPEN → CLOSED → HALF_OPEN",
+        "CLOSED → OPEN, remains OPEN indefinitely"
+      ],
+      "correctAnswer": ["CLOSED → OPEN → HALF_OPEN"],
+      "category": "Microservices",
+      "explanation": "Circuit breaker starts CLOSED (normal operation). When failure threshold is exceeded, it transitions to OPEN (failing fast). After a wait duration, it moves to HALF_OPEN (testing if service recovered). Based on test results, it returns to CLOSED or OPEN."
+    }
+  ]
+}
+
+export const SPRINGWEBFLUX:Quiz = {
+  "metadata": {
+    "title": "Spring Boot Reactive Programming, WebFlux & Advanced Patterns",
+    "version": "1.0",
+    "totalQuestions": 15,
+    "description": "Advanced quiz covering Spring WebFlux, Project Reactor, reactive programming patterns, and asynchronous processing"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "In Project Reactor, what happens when you call .subscribe() multiple times on the same Flux?",
+      "options": [
+        "The second subscription throws an IllegalStateException",
+        "Both subscriptions share the same stream of data",
+        "Each subscription triggers independent execution of the entire pipeline",
+        "Only the first subscription receives data, others are ignored"
+      ],
+      "correctAnswer": ["Each subscription triggers independent execution of the entire pipeline"],
+      "category": "Reactive Programming",
+      "explanation": "Flux and Mono are cold publishers by default. Each subscription creates a new, independent execution of the entire reactive chain from the source. This means if your Flux queries a database, multiple subscriptions will query the database multiple times."
+    },
+    {
+      "id": 2,
+      "question": "What is the behavior of flatMap() when the inner publisher emits multiple elements for a single source element?",
+      "options": [
+        "Only the first element from each inner publisher is emitted",
+        "All elements from all inner publishers are emitted, interleaved in emission order",
+        "Elements are buffered and emitted in batches",
+        "A TooManyElementsException is thrown"
+      ],
+      "correctAnswer": ["All elements from all inner publishers are emitted, interleaved in emission order"],
+      "category": "Reactive Programming",
+      "explanation": "flatMap() eagerly subscribes to all inner publishers and merges their emissions as they arrive. If each inner publisher emits multiple elements, all are emitted downstream. The order is non-deterministic based on when inner publishers emit, not source order."
+    },
+    {
+      "id": 3,
+      "question": "In Spring WebFlux, when a controller method returns Mono<ResponseEntity<Void>>, and the Mono is empty, what HTTP response is sent?",
+      "options": [
+        "404 Not Found",
+        "204 No Content",
+        "200 OK with empty body",
+        "500 Internal Server Error"
+      ],
+      "correctAnswer": ["404 Not Found"],
+      "category": "WebFlux",
+      "explanation": "An empty Mono in WebFlux is semantically equivalent to 'no value found'. When a Mono<ResponseEntity> completes empty, WebFlux interprets this as 404 Not Found. To return 204, use Mono.just(ResponseEntity.noContent().build())."
+    },
+    {
+      "id": 4,
+      "question": "What is the key difference between publishOn() and subscribeOn() in Project Reactor?",
+      "options": [
+        "publishOn() affects downstream operators, subscribeOn() affects the entire chain",
+        "publishOn() is for Flux only, subscribeOn() is for Mono only",
+        "They are identical, publishOn() is deprecated",
+        "subscribeOn() affects downstream, publishOn() affects upstream"
+      ],
+      "correctAnswer": ["publishOn() affects downstream operators, subscribeOn() affects the entire chain"],
+      "category": "Reactive Programming",
+      "explanation": "subscribeOn() affects where the subscription and source execution happen (typically the entire chain). publishOn() switches the execution context for operators downstream of where it's placed. You can have multiple publishOn() but typically one subscribeOn()."
+    },
+    {
+      "id": 5,
+      "question": "When using @Transactional with Spring WebFlux and R2DBC, what happens if you try to access a reactive repository outside the reactive chain returned by the method?",
+      "options": [
+        "The transaction is committed before the repository access",
+        "A TransactionException is thrown immediately",
+        "The repository operation executes without a transaction",
+        "The operation is queued until the next transaction starts"
+      ],
+      "correctAnswer": ["The transaction is committed before the repository access"],
+      "category": "Reactive Transactions",
+      "explanation": "In reactive programming, @Transactional boundaries follow the reactive chain. If you access a repository outside the returned Mono/Flux (like in a separate subscribe() call), it happens after the transactional method completes and the transaction commits."
+    },
+    {
+      "id": 6,
+      "question": "What is the result of Flux.just(1, 2, 3).flatMap(i -> Mono.error(new RuntimeException())).onErrorReturn(0)?",
+      "options": [
+        "Flux emits: 0",
+        "Flux emits: 0, 0, 0",
+        "Flux emits nothing and completes",
+        "RuntimeException is propagated to subscriber"
+      ],
+      "correctAnswer": ["Flux emits: 0"],
+      "category": "Reactive Programming",
+      "explanation": "flatMap() eagerly subscribes to inner publishers. When the first element causes an error, onErrorReturn() catches it and emits the fallback value (0), then the Flux terminates. Subsequent elements are not processed because the sequence has already terminated."
+    },
+    {
+      "id": 7,
+      "question": "In Spring WebFlux with WebClient, what happens when you call .block() on a Mono within a reactive handler method running on the event loop?",
+      "options": [
+        "It works correctly, blocking until the result is available",
+        "It throws an IllegalStateException about blocking in reactive context",
+        "The entire server hangs indefinitely",
+        "It automatically switches to a blocking scheduler"
+      ],
+      "correctAnswer": ["It throws an IllegalStateException about blocking in reactive context"],
+      "category": "WebFlux",
+      "explanation": "Calling .block() on a non-blocking thread (like Netty's event loop) throws IllegalStateException. Reactor detects blocking calls in reactive contexts and prevents them to avoid blocking the event loop, which would degrade performance."
+    },
+    {
+      "id": 8,
+      "question": "What is the behavior of Flux.interval(Duration.ofSeconds(1)).take(3) when you subscribe to it?",
+      "options": [
+        "Emits 0, 1, 2 immediately",
+        "Emits 0 immediately, then 1 after 1s, then 2 after 2s total",
+        "Emits 1, 2, 3 after 1s, 2s, 3s respectively",
+        "Waits 1s before emitting 0, then 1, then 2 at 1s intervals"
+      ],
+      "correctAnswer": ["Emits 0 immediately, then 1 after 1s, then 2 after 2s total"],
+      "category": "Reactive Programming",
+      "explanation": "Flux.interval() emits the first value (0) immediately upon subscription, then subsequent values at the specified interval. With take(3), it emits 0 at t=0s, 1 at t=1s, 2 at t=2s, then completes."
+    },
+    {
+      "id": 9,
+      "question": "When using @Timed from Micrometer with a WebFlux endpoint, at what point are the metrics recorded?",
+      "options": [
+        "When the Mono/Flux is created",
+        "When the first element is emitted",
+        "When the reactive sequence completes (success or error)",
+        "Immediately when the method returns"
+      ],
+      "correctAnswer": ["When the reactive sequence completes (success or error)"],
+      "category": "WebFlux",
+      "explanation": "@Timed in WebFlux measures the entire reactive sequence execution, from subscription to completion (onComplete or onError). The timer starts when subscription begins and stops when the sequence terminates, capturing the full asynchronous operation time."
+    },
+    {
+      "id": 10,
+      "question": "What happens when you use concatMap() instead of flatMap() with a Flux that emits 3 elements, each mapping to a Mono that takes 1 second to complete?",
+      "options": [
+        "All three Monos execute concurrently, total time ~1 second",
+        "Monos execute sequentially, total time ~3 seconds",
+        "Only the first Mono executes",
+        "Execution time depends on the scheduler"
+      ],
+      "correctAnswer": ["Monos execute sequentially, total time ~3 seconds"],
+      "category": "Reactive Programming",
+      "explanation": "concatMap() subscribes to inner publishers one at a time, waiting for each to complete before subscribing to the next. This maintains order but sacrifices concurrency. flatMap() would execute them concurrently (~1s total), concatMap() is sequential (~3s total)."
+    },
+    {
+      "id": 11,
+      "question": "In Spring WebFlux Security, when does the SecurityContext become available in a reactive chain?",
+      "options": [
+        "At method entry, like in servlet-based applications",
+        "It's automatically available throughout the reactive chain via ReactiveSecurityContextHolder",
+        "Only after explicitly calling SecurityContextHolder.getContext()",
+        "SecurityContext is not supported in WebFlux"
+      ],
+      "correctAnswer": ["It's automatically available throughout the reactive chain via ReactiveSecurityContextHolder"],
+      "category": "WebFlux Security",
+      "explanation": "WebFlux Security uses ReactiveSecurityContextHolder which leverages Reactor Context to propagate security information through the reactive chain. It's available via Mono.deferContextual() or automatic injection, not ThreadLocal like in servlet apps."
+    },
+    {
+      "id": 12,
+      "question": "What is the result of Mono.just(\"data\").delayElement(Duration.ofSeconds(5)).timeout(Duration.ofSeconds(3))?",
+      "options": [
+        "Emits \"data\" after 5 seconds",
+        "Emits \"data\" after 3 seconds",
+        "Throws TimeoutException after 3 seconds",
+        "Completes empty after 3 seconds"
+      ],
+      "correctAnswer": ["Throws TimeoutException after 3 seconds"],
+      "category": "Reactive Programming",
+      "explanation": "The delayElement() operator delays emission by 5 seconds, but timeout(3 seconds) will trigger first. Since no element is emitted within 3 seconds, timeout() terminates the sequence with a TimeoutException."
+    },
+    {
+      "id": 13,
+      "question": "When using Spring WebFlux with Server-Sent Events (SSE), and you return Flux<ServerSentEvent>, what happens if the Flux emits an error?",
+      "options": [
+        "The SSE connection is closed and client receives the error",
+        "The error is logged but connection remains open",
+        "A retry event is sent to the client",
+        "The error element is serialized and sent as an SSE event"
+      ],
+      "correctAnswer": ["The SSE connection is closed and client receives the error"],
+      "category": "WebFlux",
+      "explanation": "When a Flux powering an SSE stream errors, the reactive sequence terminates. WebFlux closes the SSE connection, and the client's EventSource receives an error event. To keep the connection open on errors, use error handling operators like onErrorResume()."
+    },
+    {
+      "id": 14,
+      "question": "What is the difference between Mono.defer() and Mono.fromSupplier() when creating a Mono?",
+      "options": [
+        "defer() evaluates on subscription, fromSupplier() evaluates immediately",
+        "They are functionally identical",
+        "fromSupplier() is thread-safe, defer() is not",
+        "defer() supports only Mono, fromSupplier() supports both Mono and Flux"
+      ],
+      "correctAnswer": ["defer() evaluates on subscription, fromSupplier() evaluates immediately"],
+      "category": "Reactive Programming",
+      "explanation": "Mono.defer() takes a Supplier<Mono> and calls it on each subscription, creating a new Mono per subscriber. Mono.fromSupplier() takes a Supplier<T> and creates one Mono upfront, but the supplier is still called lazily on subscription. The key difference is defer() can return different Mono implementations per subscription."
+    },
+    {
+      "id": 15,
+      "question": "In R2DBC with Spring Data, what happens when you call a repository method that returns Mono<Entity> and the query returns multiple rows?",
+      "options": [
+        "Only the first row is returned",
+        "All rows are returned in a collection",
+        "An IncorrectResultSizeDataAccessException is thrown",
+        "The Mono emits the last row"
+      ],
+      "correctAnswer": ["An IncorrectResultSizeDataAccessException is thrown"],
+      "category": "R2DBC",
+      "explanation": "When a repository method returns Mono<T>, it expects exactly one result (or empty). If the query returns multiple rows, R2DBC throws IncorrectResultSizeDataAccessException because the cardinality contract is violated. Use Flux<Entity> for multiple results."
+    }
+  ]
+}
+
+export const SPRINGINTERVIEW:Quiz = {
+  "metadata": {
+    "title": "Spring Boot Interview Quiz",
+    "version": "1.0",
+    "totalQuestions": 15,
+    "description": "Quiz covering beginner, medium and advanced topics in Spring Boot."
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "What annotation combines @Configuration, @EnableAutoConfiguration, and @ComponentScan in Spring Boot?",
+      "options": ["@SpringBootApplication", "@EnableSpringBoot", "@SpringBootConfig", "@BootApplication"],
+      "correctAnswer": ["@SpringBootApplication"],
+      "category": "Beginner",
+      "explanation": "The @SpringBootApplication annotation is a convenience annotation that includes @Configuration, @EnableAutoConfiguration and @ComponentScan. :contentReference[oaicite:1]{index=1}"
+    },
+    {
+      "id": 2,
+      "question": "What is the default port of the embedded Tomcat server in a Spring Boot web application?",
+      "options": ["8080", "8081", "80", "443"],
+      "correctAnswer": ["8080"],
+      "category": "Beginner",
+      "explanation": "By default Spring Boot uses port 8080 for its embedded Tomcat (or other web server) unless overridden via configuration (e.g., server.port). :contentReference[oaicite:2]{index=2}"
+    },
+    {
+      "id": 3,
+      "question": "What does the “starter” dependency in Spring Boot provide?",
+      "options": ["A full application server", "A collection of useful dependencies and version management for a specific functionality", "Only logging dependencies", "Only testing dependencies"],
+      "correctAnswer": ["A collection of useful dependencies and version management for a specific functionality"],
+      "category": "Medium",
+      "explanation": "Spring Boot starter dependencies (e.g., spring-boot-starter-web) provide a curated set of libraries and auto-configuration relevant to the functionality, easing dependency management. :contentReference[oaicite:3]{index=3}"
+    },
+    {
+      "id": 4,
+      "question": "How can you change the port of the embedded web server in a Spring Boot application?",
+      "options": ["Changing server.port in application.properties", "Setting the JAVA_OPTS variable", "Modifying the main class name", "Using @PortChange annotation"],
+      "correctAnswer": ["Changing server.port in application.properties"],
+      "category": "Medium",
+      "explanation": "You can change the embedded server’s port by specifying server.port=<desired> in application.properties (or application.yml). :contentReference[oaicite:4]{index=4}"
+    },
+    {
+      "id": 5,
+      "question": "Which annotation is used to create a RESTful controller in Spring Boot that automatically serialises return values to JSON/XML?",
+      "options": ["@Controller", "@RestController", "@WebController", "@JsonController"],
+      "correctAnswer": ["@RestController"],
+      "category": "Medium",
+      "explanation": "@RestController is a shorthand for @Controller + @ResponseBody, so methods return data (JSON/XML) rather than a view. :contentReference[oaicite:5]{index=5}"
+    },
+    {
+      "id": 6,
+      "question": "What is the purpose of the built-in Actuator module in Spring Boot?",
+      "options": ["To auto-configure database schemas", "To generate UI templates", "To provide production-ready monitoring and management endpoints", "To replace Spring MVC"],
+      "correctAnswer": ["To provide production-ready monitoring and management endpoints"],
+      "category": "Medium",
+      "explanation": "The Spring Boot Actuator adds endpoints like /health, /metrics, /beans, etc for managing and monitoring applications in production. :contentReference[oaicite:6]{index=6}"
+    },
+    {
+      "id": 7,
+      "question": "How do you disable a specific auto-configuration class in Spring Boot?",
+      "options": ["Using @EnableAutoConfig(exclude=…)", "Using @SpringBootApplication(exclude={…})", "Setting spring.disable.auto=true", "Removing the jar from classpath"],
+      "correctAnswer": ["Using @SpringBootApplication(exclude={…})"],
+      "category": "Medium",
+      "explanation": "You can exclude specific auto-configuration via the exclude attribute on @SpringBootApplication (or @EnableAutoConfiguration) to prevent certain configuration classes from being applied. :contentReference[oaicite:7]{index=7}"
+    },
+    {
+      "id": 8,
+      "question": "What property would you use to activate a specific Spring profile (for example 'dev') in a Spring Boot application?",
+      "options": ["spring.profile=dev", "spring.profiles.active=dev", "profiles.active=dev", "spring.boot.profile=dev"],
+      "correctAnswer": ["spring.profiles.active=dev"],
+      "category": "Medium",
+      "explanation": "To activate a profile you typically set spring.profiles.active=<profileName> (for example in application.properties or as an environment variable). :contentReference[oaicite:8]{index=8}"
+    },
+    {
+      "id": 9,
+      "question": "In Spring Boot, which annotation is used to map HTTP GET requests to a handler method?",
+      "options": ["@RequestMapping(method=GET)", "@GetMapping", "@HttpGet", "@GetRequestMapping"],
+      "correctAnswer": ["@GetMapping"],
+      "category": "Advanced",
+      "explanation": "@GetMapping is a composed annotation of @RequestMapping(method = RequestMethod.GET) introduced for clarity and convenience. :contentReference[oaicite:9]{index=9}"
+    },
+    {
+      "id": 10,
+      "question": "How can you create a non-web (console) application using Spring Boot?",
+      "options": ["Set spring.main.web-application-type=NONE", "Use @ConsoleApplication annotation", "Remove spring-boot-starter-web and keep Tomcat dependency", "Use @SpringBootConsoleApplication"],
+      "correctAnswer": ["Set spring.main.web-application-type=NONE"],
+      "category": "Advanced",
+      "explanation": "You can configure spring.main.web-application-type=none (or WebApplicationType.NONE) to run a non-web Spring Boot application; effectively disabling the embedded web server. :contentReference[oaicite:10]{index=10}"
+    },
+    {
+      "id": 11,
+      "question": "How would you replace the embedded Tomcat server with Jetty in a Spring Boot application?",
+      "options": ["Remove Tomcat dependency and add spring-boot-starter-jetty", "Set server.servlet.container=jetty", "Use @UseJetty annotation", "Modify spring.server.container=jetty"],
+      "correctAnswer": ["Remove Tomcat dependency and add spring-boot-starter-jetty"],
+      "category": "Advanced",
+      "explanation": "To switch the embedded container from Tomcat to Jetty you exclude the Tomcat starter and include spring-boot-starter-jetty or similar in your build. :contentReference[oaicite:11]{index=11}"
+    },
+    {
+      "id": 12,
+      "question": "What is the purpose of the /beans endpoint in Spring Boot Actuator?",
+      "options": ["To list all Spring MVC controllers", "To show all Spring beans in the application context", "To list all database tables", "To list all HTTP request mappings"],
+      "correctAnswer": ["To show all Spring beans in the application context"],
+      "category": "Advanced",
+      "explanation": "The /actuator/beans endpoint provides information about all the beans in the application context and their scopes. :contentReference[oaicite:12]{index=12}"
+    },
+    {
+      "id": 13,
+      "question": "How can you integrate a message broker like Kafka with Spring Boot for asynchronous processing?",
+      "options": ["By using spring-boot-starter-kafka and @KafkaListener annotations", "By using spring-boot-starter-messaging only", "By writing raw socket code inside Spring Boot", "By disabling auto-configuration and configuring manually only"],
+      "correctAnswer": ["By using spring-boot-starter-kafka and @KafkaListener annotations"],
+      "category": "Advanced",
+      "explanation": "Integration with Kafka (or RabbitMQ) is supported via the appropriate starter (e.g., spring-boot-starter-kafka) along with listener annotations (@KafkaListener) to process messages asynchronously. :contentReference[oaicite:13]{index=13}"
+    },
+    {
+      "id": 14,
+      "question": "What is distributed tracing in a Spring Boot microservices environment and how can it be enabled?",
+      "options": ["Tracking bean creation times only", "Capturing and propagating trace/span IDs across service calls using tools like OpenTelemetry or Sleuth", "Logging only at INFO level", "Using @Trace annotation on all methods"],
+      "correctAnswer": ["Capturing and propagating trace/span IDs across service calls using tools like OpenTelemetry or Sleuth"],
+      "category": "Advanced",
+      "explanation": "Distributed tracing involves tracking a request as it propagates across microservices, typically via trace/span IDs. In Spring Boot you might use libraries like Spring Cloud Sleuth or OpenTelemetry to enable this. :contentReference[oaicite:14]{index=14}"
+    },
+    {
+      "id": 15,
+      "question": "How do you configure custom health indicators in Spring Boot Actuator to add application-specific health checks?",
+      "options": ["By extending HealthIndicator interface and registering the bean", "By editing server.health.custom=true only", "By using @HealthCheck annotation on methods", "By adding healthIndicator=true in application.properties"],
+      "correctAnswer": ["By extending HealthIndicator interface and registering the bean"],
+      "category": "Advanced",
+      "explanation": "To add custom health checks you implement the HealthIndicator interface (or extend AbstractHealthIndicator), create a bean of that class, and Spring Boot Actuator will include it in its health endpoint. :contentReference[oaicite:15]{index=15}"
+    }
+  ]
+}
+export const SPRINGTESTING:Quiz = {
+  "metadata": {
+    "title": "Spring Boot Testing, Performance & Advanced Topics",
+    "version": "1.0",
+    "totalQuestions": 15,
+    "description": "Advanced quiz covering Spring Boot testing strategies, performance optimization, messaging, batch processing, and advanced configuration"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "When using @SpringBootTest with WebEnvironment.MOCK, what is the behavior of @Autowired WebTestClient?",
+      "options": [
+        "WebTestClient is not available and injection fails",
+        "WebTestClient works with a mock servlet container",
+        "WebTestClient requires WebEnvironment.RANDOM_PORT",
+        "A real HTTP server is started despite MOCK environment"
+      ],
+      "correctAnswer": ["WebTestClient is not available and injection fails"],
+      "category": "Testing",
+      "explanation": "WebTestClient requires an actual reactive web environment (WebFlux) or a running server. With WebEnvironment.MOCK (servlet-based), use MockMvc instead. WebTestClient is for testing WebFlux applications or can be configured to connect to a real server with RANDOM_PORT."
+    },
+    {
+      "id": 2,
+      "question": "What happens when you use @MockBean in a test class to mock a bean that has @PostConstruct initialization logic?",
+      "options": [
+        "The @PostConstruct method is executed on the mock",
+        "The @PostConstruct method is skipped entirely",
+        "A BeanCreationException is thrown",
+        "The real bean is created first, then replaced by the mock"
+      ],
+      "correctAnswer": ["The @PostConstruct method is skipped entirely"],
+      "category": "Testing",
+      "explanation": "@MockBean replaces the real bean with a Mockito mock before any initialization. The @PostConstruct method belongs to the real bean class and is never invoked. The mock has no behavior unless explicitly stubbed using when()."
+    },
+    {
+      "id": 3,
+      "question": "In Spring Batch, what is the behavior when a Step configured with chunk size 10 processes 25 records and a failure occurs on record 23?",
+      "options": [
+        "All 25 records are rolled back",
+        "Records 1-20 are committed, 21-25 are rolled back",
+        "Only record 23 is rolled back, others are committed",
+        "Records 1-22 are committed, 23-25 are rolled back"
+      ],
+      "correctAnswer": ["Records 1-20 are committed, 21-25 are rolled back"],
+      "category": "Batch Processing",
+      "explanation": "Spring Batch commits in chunks. With chunk size 10, first 10 records commit, then next 10 commit (records 1-20 total). The third chunk (21-25) is in progress when failure occurs at record 23. This entire chunk (21-25) rolls back. Committed chunks remain committed."
+    },
+    {
+      "id": 4,
+      "question": "When using @DataJpaTest, which of the following beans is NOT available in the test context by default?",
+      "options": [
+        "EntityManager",
+        "JpaRepository instances",
+        "RestTemplate",
+        "TestEntityManager"
+      ],
+      "correctAnswer": ["RestTemplate"],
+      "category": "Testing",
+      "explanation": "@DataJpaTest creates a slice test context focused on JPA components. It includes EntityManager, repositories, and TestEntityManager. RestTemplate, controllers, services, and other web/business layer components are excluded. Use @SpringBootTest for full context."
+    },
+    {
+      "id": 5,
+      "question": "In Spring Boot with Kafka, when using @KafkaListener with concurrency=3, and a message processing fails with an exception, what is the default behavior?",
+      "options": [
+        "The message is automatically sent to a dead letter topic",
+        "The message is retried indefinitely on the same thread",
+        "The consumer stops and manual intervention is required",
+        "The message is logged and skipped, processing continues"
+      ],
+      "correctAnswer": ["The consumer stops and manual intervention is required"],
+      "category": "Messaging",
+      "explanation": "By default, when a listener throws an exception, the error handler logs it and the consumer stops consuming from that partition. The message is not automatically retried or sent to DLT. You must configure error handlers (like SeekToCurrentErrorHandler) or retry mechanisms."
+    },
+    {
+      "id": 6,
+      "question": "What is the impact of setting spring.jpa.open-in-view=false in a Spring Boot application?",
+      "options": [
+        "Lazy loading stops working entirely",
+        "Lazy loading throws LazyInitializationException outside controller layer",
+        "Database connections are closed immediately after repository calls",
+        "All entities are eagerly fetched automatically"
+      ],
+      "correctAnswer": ["Lazy loading throws LazyInitializationException outside controller layer"],
+      "category": "Performance",
+      "explanation": "Open Session In View (OSIV) keeps the Hibernate session open through the entire web request, allowing lazy loading in views/controllers. Setting it to false closes the session after the service layer, so lazy loading attempts in controllers throw LazyInitializationException. This is better for performance but requires explicit fetching."
+    },
+    {
+      "id": 7,
+      "question": "When using @Cacheable with condition=\"#result != null\", at what point is the condition evaluated?",
+      "options": [
+        "Before method execution to decide whether to check cache",
+        "After method execution to decide whether to cache the result",
+        "Both before and after method execution",
+        "The condition attribute doesn't support #result"
+      ],
+      "correctAnswer": ["The condition attribute doesn't support #result"],
+      "category": "Caching",
+      "explanation": "The 'condition' attribute is evaluated BEFORE method execution to decide if caching should be attempted. It cannot reference #result because the method hasn't executed yet. Use 'unless' attribute to conditionally prevent caching based on the result after method execution."
+    },
+    {
+      "id": 8,
+      "question": "In Spring Boot with RabbitMQ, when a message listener method is annotated with @RabbitListener and throws an exception, what happens if no error handler is configured?",
+      "options": [
+        "The message is requeued indefinitely until it succeeds",
+        "The message is discarded and processing continues",
+        "The message is rejected and sent to the default dead letter exchange if configured",
+        "The listener container stops completely"
+      ],
+      "correctAnswer": ["The message is rejected and sent to the default dead letter exchange if configured"],
+      "category": "Messaging",
+      "explanation": "By default, when a listener throws an exception, Spring AMQP rejects the message (with requeue=false). If the queue has a dead letter exchange (DLX) configured, the message goes there. Without DLX, the message is lost. The container continues processing other messages."
+    },
+    {
+      "id": 9,
+      "question": "What is the result of using @Sql(scripts=\"/test-data.sql\", executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD) when the test method fails?",
+      "options": [
+        "The SQL script is not executed",
+        "The SQL script executes before rollback",
+        "The SQL script executes after rollback",
+        "A SQLScriptException is thrown"
+      ],
+      "correctAnswer": ["The SQL script executes after rollback"],
+      "category": "Testing",
+      "explanation": "AFTER_TEST_METHOD scripts execute after the test method completes and after the transaction rollback (if @Transactional is used). They run regardless of test success or failure, making them useful for cleanup. They execute in a separate transaction."
+    },
+    {
+      "id": 10,
+      "question": "When using Spring Boot Actuator's /metrics endpoint with Micrometer, what happens if you create a custom Counter and increment it, but never register it with the MeterRegistry?",
+      "options": [
+        "The counter is automatically registered and visible in /metrics",
+        "The counter increments but is not visible in /metrics",
+        "A MeterRegistrationException is thrown on increment",
+        "The counter must be registered or it throws NullPointerException"
+      ],
+      "correctAnswer": ["The counter increments but is not visible in /metrics"],
+      "category": "Actuator",
+      "explanation": "You can create and use Micrometer meters without registering them, but they won't be exported or visible in actuator endpoints. The meter functions normally (tracking values), but the data isn't published. Always use MeterRegistry.counter() or inject the registry."
+    },
+    {
+      "id": 11,
+      "question": "In @WebMvcTest for a specific controller, which of the following is automatically configured in the test context?",
+      "options": [
+        "All @Component beans in the application",
+        "Only the tested controller and MockMvc",
+        "The controller, MockMvc, and all @ControllerAdvice classes",
+        "The entire Spring context excluding the database layer"
+      ],
+      "correctAnswer": ["The controller, MockMvc, and all @ControllerAdvice classes"],
+      "category": "Testing",
+      "explanation": "@WebMvcTest creates a slice context with the web layer: specified controllers, MockMvc, and all @ControllerAdvice/@ExceptionHandler components. Services, repositories, and other business logic beans are excluded and must be mocked with @MockBean."
+    },
+    {
+      "id": 12,
+      "question": "What is the behavior of @Retryable when maxAttempts=3 and the method succeeds on the second attempt?",
+      "options": [
+        "The method executes all 3 times regardless",
+        "The method executes twice and returns the successful result",
+        "The method executes once and returns immediately",
+        "A RetryExhaustedException is still thrown"
+      ],
+      "correctAnswer": ["The method executes twice and returns the successful result"],
+      "category": "Resilience",
+      "explanation": "@Retryable retries only when exceptions occur. If the first attempt fails and the second succeeds, execution stops after the second attempt. maxAttempts=3 means it will try UP TO 3 times total (1 initial + 2 retries), stopping as soon as it succeeds."
+    },
+    {
+      "id": 13,
+      "question": "When using Spring Boot with MongoDB and @Document entities, what happens if you save an entity with an existing _id but different field values?",
+      "options": [
+        "A DuplicateKeyException is thrown",
+        "A new document is created with a different _id",
+        "The existing document is updated with new field values",
+        "Both documents exist with the same _id"
+      ],
+      "correctAnswer": ["The existing document is updated with new field values"],
+      "category": "NoSQL",
+      "explanation": "MongoRepository.save() performs an upsert operation. If an entity has an _id that exists in the collection, save() updates that document with the new field values. If the _id doesn't exist, it inserts a new document. This is different from JPA where save() can be ambiguous."
+    },
+    {
+      "id": 14,
+      "question": "In a test using @TestPropertySource(properties=\"app.feature.enabled=true\") and the application.yml has the same property set to false, which value takes precedence?",
+      "options": [
+        "application.yml value (false)",
+        "@TestPropertySource value (true)",
+        "A PropertyConflictException is thrown",
+        "The value from the active profile"
+      ],
+      "correctAnswer": ["@TestPropertySource value (true)"],
+      "category": "Testing",
+      "explanation": "@TestPropertySource has higher precedence than application.properties/yml in the property source hierarchy for tests. Test-specific property sources override application configuration files, allowing tests to customize behavior without modifying production configuration."
+    },
+    {
+      "id": 15,
+      "question": "When using Spring Boot with Elasticsearch, what is the behavior of a repository method annotated with @Query that contains a syntax error in the query JSON?",
+      "options": [
+        "Compilation fails with a syntax error",
+        "Application startup fails with query parsing error",
+        "The error is detected at runtime when the method is first called",
+        "Elasticsearch automatically fixes the query syntax"
+      ],
+      "correctAnswer": ["The error is detected at runtime when the method is first called"],
+      "category": "NoSQL",
+      "explanation": "Spring Data Elasticsearch @Query annotations with JSON are not validated at startup or compile time. The query string is sent to Elasticsearch when the method is invoked. Syntax errors are discovered at runtime, potentially in production if not properly tested."
+    }
+  ]
+}
