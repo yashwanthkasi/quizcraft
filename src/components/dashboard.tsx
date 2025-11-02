@@ -3,7 +3,7 @@
 import { FileUpload } from '@/components/ui/file-upload';
 import { JsonFormatHelper } from '@/components/ui/json-format-helper';
 import { QuizCard } from '@/components/ui/quiz-card';
-import { awsAiPractitionerQuiz, AWSAISERVICESQUIZ } from '@/data/aws-ai-practitioner';
+import { awsAiPractitionerQuiz, AWSAISERVICESQUIZ, SPRINGWEBFLUX, SPRINGREST, SPRINGTESTING, SPRINGINTERVIEW, SPRINGDATA, SPRINGCORE } from '@/data/aws-ai-practitioner';
 import { Quiz } from '@/types/quiz';
 import { storage } from '@/lib/storage';
 import { useCallback, useEffect, useState } from 'react';
@@ -48,6 +48,30 @@ export function Dashboard() {
         />
         <QuizCard
           quiz={AWSAISERVICESQUIZ}
+          onStart={handleStartQuiz}
+        />
+        <QuizCard
+          quiz={SPRINGTESTING}
+          onStart={handleStartQuiz}
+        />
+        <QuizCard
+          quiz={SPRINGREST}
+          onStart={handleStartQuiz}
+        />
+        <QuizCard
+          quiz={SPRINGWEBFLUX}
+          onStart={handleStartQuiz}
+        />
+        <QuizCard
+          quiz={SPRINGINTERVIEW}
+          onStart={handleStartQuiz}
+        />
+        <QuizCard
+          quiz={SPRINGDATA}
+          onStart={handleStartQuiz}
+        />
+        <QuizCard
+          quiz={SPRINGCORE}
           onStart={handleStartQuiz}
         />
         
