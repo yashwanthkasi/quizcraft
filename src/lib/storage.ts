@@ -67,7 +67,8 @@ class StorageManager {
   }
 
   private generateQuizId(quiz: Quiz): string {
-    return `${quiz.metadata.title.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
+    const title = quiz.metadata.title || quiz.name || 'untitled';
+    return `${title.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
   }
 
   // Custom Quizzes

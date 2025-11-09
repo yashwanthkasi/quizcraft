@@ -1,8 +1,6 @@
 import { Quiz } from '@/types/quiz';
 import { Button } from './button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './card';
-import { QuizMetaDisplay } from './quiz-meta-display';
-import { storage } from '@/lib/storage';
 import { motion } from 'framer-motion';
 
 interface QuizCardProps {
@@ -21,15 +19,15 @@ export function QuizCard({ quiz, onStart }: QuizCardProps) {
     >
       <Card hover>
         <CardHeader>
-          <CardTitle>{quiz.metadata.title}</CardTitle>
+          <CardTitle>{quiz.name}</CardTitle>
           <CardDescription>
-            {quiz.metadata.description}
+            {quiz.description}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
             <p className="text-sm text-gray-500">
-              {quiz.metadata.totalQuestions} questions
+              {quiz.questions.length} questions • {quiz.settings.timeLimit} minutes
             </p>
             <div className="flex flex-wrap gap-2">
               {categories.slice(0, 5).map((category) => (
@@ -48,7 +46,11 @@ export function QuizCard({ quiz, onStart }: QuizCardProps) {
                 </span>
               )}
             </div>
-            {quiz.id && <QuizMetaDisplay meta={storage.getQuizMeta(quiz.id)} />}
+            {quiz.created_at && (
+              <p className="text-sm text-gray-500">
+                Created {new Date(quiz.created_at).toLocaleDateString()}
+              </p>
+            )}
           </div>
         </CardContent>
         <CardFooter>

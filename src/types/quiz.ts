@@ -1,10 +1,3 @@
-export interface QuizMetadata {
-  title: string;
-  version: string;
-  totalQuestions: number;
-  description: string;
-}
-
 export interface Question {
   id: number;
   question: string;
@@ -14,10 +7,27 @@ export interface Question {
   explanation: string;
 }
 
+export interface QuizSettings {
+  timeLimit: number;
+  passingScore: number;
+}
+
+export interface QuizMetadata {
+  title?: string;
+  version?: string;
+  description?: string;
+  totalQuestions: number;
+}
+
 export interface Quiz {
   id?: string;
-  metadata: QuizMetadata;
+  name: string;
+  description: string;
   questions: Question[];
+  settings: QuizSettings;
+  created_at?: string;
+  updated_at?: string;
+  metadata: QuizMetadata;
 }
 
 export interface QuizState {

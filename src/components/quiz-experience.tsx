@@ -4,16 +4,22 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { Quiz, Question, QuizState } from '@/types/quiz';
-import { storage } from '@/lib/storage';
+import { getQuizById } from '@/lib/supabase';
 import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { Timer } from '@/components/ui/timer';
 
-export function QuizExperience() {
+interface QuizExperienceProps {
+  quizId: string;
+}
+
+export function QuizExperience({ quizId }: QuizExperienceProps) {
   const router = useRouter();
   const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentState, setCurrentState] = useState<QuizState>({
     currentQuestionIndex: 0,
     answers: {},
@@ -22,25 +28,46 @@ export function QuizExperience() {
   });
 
   useEffect(() => {
-    const activeQuiz = storage.getActiveQuiz();
-    const savedState = storage.getQuizState();
+    let mounted = true;
 
-    if (!activeQuiz) {
-      router.push('/');
-      return;
+    async function loadQuiz() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getQuizById(quizId);
+        if (mounted) {
+          setQuiz(data);
+          // Initialize timer state when quiz loads
+          setCurrentState(prev => ({
+            ...prev,
+            startTime: Date.now(),
+            durationInMinutes: data.settings.timeLimit
+          }));
+        }
+      } catch (err) {
+        if (mounted) {
+          setError('Failed to load quiz');
+          console.error('Error loading quiz:', err);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
 
-    setQuiz(activeQuiz);
-    if (savedState) {
-      setCurrentState(savedState);
-    }
-  }, [router]);
+    loadQuiz();
+
+    return () => {
+      mounted = false;
+    };
+  }, [quizId]);
 
   const handleAnswer = useCallback((selectedOptions: string[]) => {
     if (!quiz) return;
 
     setCurrentState(prev => {
-      const newState = {
+      return {
         ...prev,
         answers: {
           ...prev.answers,
@@ -51,8 +78,6 @@ export function QuizExperience() {
           [quiz.questions[prev.currentQuestionIndex].id]: true
         }
       };
-      storage.saveQuizState(newState);
-      return newState;
     });
   }, [quiz]);
 
@@ -64,28 +89,52 @@ export function QuizExperience() {
         ? prev.currentQuestionIndex + 1
         : prev.currentQuestionIndex - 1;
 
-      const newState = {
+      return {
         ...prev,
         currentQuestionIndex: newIndex
       };
-      storage.saveQuizState(newState);
-      return newState;
     });
   }, [quiz]);
+
+  const calculateScore = useCallback(() => {
+    if (!quiz) return 0;
+    const totalQuestions = quiz.questions.length;
+    const correctAnswers = quiz.questions.reduce((count, question) => {
+      const userAnswer = (currentState.answers[question.id] || []).sort();
+      const correctAnswer = [...question.correctAnswer].sort();
+      const isCorrect = userAnswer.length === correctAnswer.length &&
+        userAnswer.every((ans, index) => ans === correctAnswer[index]);
+      return isCorrect ? count + 1 : count;
+    }, 0);
+    return Math.round((correctAnswers / totalQuestions) * 100);
+  }, [quiz, currentState.answers]);
 
   const handleSubmit = useCallback(() => {
     if (!quiz) return;
 
-    setCurrentState(prev => {
-      const newState = { ...prev, isComplete: true };
-      storage.saveQuizState(newState);
-      return newState;
-    });
-    router.push('/results');
-  }, [quiz, router]);
+    const score = calculateScore();
+    // Convert answers to a URL-safe string
+    const answersStr = encodeURIComponent(JSON.stringify(currentState.answers));
+    router.push(`/results?id=${quiz.id}&score=${score}&answers=${answersStr}`);
+  }, [quiz, router, calculateScore, currentState.answers]);
 
-  if (!quiz || !quiz.questions || quiz.questions.length === 0) {
-    return null;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-lg text-gray-500">Loading quiz...</p>
+      </div>
+    );
+  }
+
+  if (error || !quiz || !quiz.questions || quiz.questions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+        <p className="text-lg text-red-500">{error || 'Failed to load quiz'}</p>
+        <Button onClick={() => router.push('/')}>
+          Return to Home
+        </Button>
+      </div>
+    );
   }
 
   // Ensure currentQuestionIndex is within bounds
@@ -142,6 +191,16 @@ export function QuizExperience() {
               <h2 className="text-xl font-semibold">
                 {currentQuestion.question}
               </h2>
+              {currentQuestion.correctAnswer.length > 1 && !currentState.submittedQuestions[currentQuestion.id] && (
+                <div className="mt-2 space-y-1">
+                  <p className="text-sm font-medium text-primary-600">
+                    Multiple Choice Question
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Select your options and click the Submit button when you're ready
+                  </p>
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -152,11 +211,19 @@ export function QuizExperience() {
                   const handleClick = () => {
                     if (isSubmitted) return;
                     if (isMultipleChoice) {
+                      // For multiple choice, just update the selected options without submitting
                       const newAnswers = currentAnswer.includes(option)
                         ? currentAnswer.filter(ans => ans !== option)
                         : [...currentAnswer, option];
-                      handleAnswer(newAnswers);
+                      setCurrentState(prev => ({
+                        ...prev,
+                        answers: {
+                          ...prev.answers,
+                          [currentQuestion.id]: newAnswers
+                        }
+                      }));
                     } else {
+                      // For single choice, submit immediately
                       handleAnswer([option]);
                     }
                   };
@@ -174,7 +241,9 @@ export function QuizExperience() {
                             ? 'bg-red-100 border-2 border-red-500'
                             : 'bg-gray-50 border-2 border-transparent opacity-70'
                           : currentAnswer.includes(option)
-                          ? 'bg-primary-100 border-2 border-primary-500'
+                          ? isMultipleChoice
+                            ? 'bg-gray-100 border-2 border-gray-300'  // Just show as selected for multiple choice
+                            : 'bg-primary-100 border-2 border-primary-500'  // Show primary color for single choice
                           : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
                       }`}
                     >
@@ -188,7 +257,9 @@ export function QuizExperience() {
                             ? 'border-red-500 bg-red-500'
                             : 'border-gray-300'
                           : currentAnswer.includes(option)
-                          ? 'border-primary-500 bg-primary-500'
+                          ? isMultipleChoice
+                            ? 'border-gray-500 bg-gray-500'  // Just show as selected for multiple choice
+                            : 'border-primary-500 bg-primary-500'  // Show primary color for single choice
                           : 'border-gray-300'
                       }`}>
                         {currentAnswer.includes(option) && !isSubmitted && (
@@ -251,22 +322,27 @@ export function QuizExperience() {
                   animate={{ opacity: 1, y: 0 }}
                   className="mt-6"
                 >
-                  <div className="border-l-4 border-primary-500 pl-4 py-1 mb-4">
-                    <div className="font-medium text-lg mb-1">
-                      {currentAnswer.sort().join(',') === currentQuestion.correctAnswer.sort().join(',') ? (
-                        <span className="text-green-600">✅ Correct!</span>
-                      ) : (
-                        <span className="text-red-600">❌ Incorrect</span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="font-medium text-lg mb-2 text-gray-800">Explanation</h3>
-                    <p className="text-gray-600">
-                      {currentQuestion.explanation}
-                    </p>
-                  </div>
+                  {/* Only show feedback for single-choice or submitted multiple-choice questions */}
+                  {(!(currentQuestion.correctAnswer.length > 1) || currentState.submittedQuestions[currentQuestion.id]) && (
+                    <>
+                      <div className="border-l-4 border-primary-500 pl-4 py-1 mb-4">
+                        <div className="font-medium text-lg mb-1">
+                          {currentAnswer.sort().join(',') === currentQuestion.correctAnswer.sort().join(',') ? (
+                            <span className="text-green-600">✅ Correct!</span>
+                          ) : (
+                            <span className="text-red-600">❌ Incorrect</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <h3 className="font-medium text-lg mb-2 text-gray-800">Explanation</h3>
+                        <p className="text-gray-600">
+                          {currentQuestion.explanation}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </motion.div>
               )}
             </CardContent>
@@ -279,33 +355,74 @@ export function QuizExperience() {
                 <ArrowLeftIcon className="h-4 w-4 mr-2" />
                 Previous
               </Button>
-              
-              {currentAnswer.length > 0 && (
-                isLastQuestion ? (
-                  currentState.submittedQuestions[currentQuestion.id] ? (
+
+              {/* For multiple choice questions, show submit button in the middle */}
+              {currentQuestion.correctAnswer.length > 1 && currentAnswer.length > 0 && !currentState.submittedQuestions[currentQuestion.id] && (
+                <Button
+                  onClick={() => handleAnswer(currentAnswer)}
+                  variant="default"
+                >
+                  Submit Answer
+                </Button>
+              )}
+
+              {/* Navigation and single-choice submission */}
+              {(() => {
+                const isMultipleChoice = currentQuestion.correctAnswer.length > 1;
+                const isSubmitted = currentState.submittedQuestions[currentQuestion.id];
+
+                // For multiple choice questions that are already submitted
+                if (isMultipleChoice && isSubmitted) {
+                  return isLastQuestion ? (
                     <Button onClick={handleSubmit}>
                       Finish Quiz
                     </Button>
                   ) : (
-                    <Button onClick={() => handleAnswer(currentAnswer)}>
-                      Submit Answer
+                    <Button onClick={() => navigate('next')}>
+                      Next Question
+                      <ArrowRightIcon className="h-4 w-4 ml-2" />
                     </Button>
-                  )
-                ) : (
-                  <Button 
-                    onClick={() => {
-                      if (!currentState.submittedQuestions[currentQuestion.id]) {
-                        handleAnswer(currentAnswer);
-                      } else {
-                        navigate('next');
-                      }
-                    }}
-                  >
-                    {currentState.submittedQuestions[currentQuestion.id] ? 'Next Question' : 'Submit & Next'}
-                    <ArrowRightIcon className="h-4 w-4 ml-2" />
-                  </Button>
-                )
-              )}
+                  );
+                }
+
+                // For single choice questions
+                if (!isMultipleChoice && currentAnswer.length > 0) {
+                  if (isSubmitted) {
+                    return isLastQuestion ? (
+                      <Button onClick={handleSubmit}>
+                        Finish Quiz
+                      </Button>
+                    ) : (
+                      <Button onClick={() => navigate('next')}>
+                        Next Question
+                        <ArrowRightIcon className="h-4 w-4 ml-2" />
+                      </Button>
+                    );
+                  } else {
+                    return (
+                      <Button onClick={() => handleAnswer(currentAnswer)}>
+                        {isLastQuestion ? 'Submit Answer' : 'Submit & Next'}
+                        <ArrowRightIcon className="h-4 w-4 ml-2" />
+                      </Button>
+                    );
+                  }
+                }
+
+                // Show next button if nothing else
+                if (isSubmitted) {
+                  return (
+                    <Button
+                      onClick={() => navigate('next')}
+                      disabled={currentState.currentQuestionIndex === quiz.questions.length - 1}
+                    >
+                      Next Question
+                      <ArrowRightIcon className="h-4 w-4 ml-2" />
+                    </Button>
+                  );
+                }
+
+                return null;
+              })()}
             </CardFooter>
           </Card>
         </motion.div>

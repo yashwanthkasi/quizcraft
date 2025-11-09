@@ -38,6 +38,7 @@ export const quizUtils = {
     }));
 
     return {
+      ...quiz,
       metadata: {
         ...quiz.metadata,
         totalQuestions: questions.length

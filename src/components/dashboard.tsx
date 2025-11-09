@@ -1,33 +1,48 @@
 'use client';
 
-import { FileUpload } from '@/components/ui/file-upload';
-import { JsonFormatHelper } from '@/components/ui/json-format-helper';
 import { QuizCard } from '@/components/ui/quiz-card';
-import { awsAiPractitionerQuiz, AWSAISERVICESQUIZ, SPRINGWEBFLUX, SPRINGREST, SPRINGTESTING, SPRINGINTERVIEW, SPRINGDATA, SPRINGCORE } from '@/data/aws-ai-practitioner';
 import { Quiz } from '@/types/quiz';
-import { storage } from '@/lib/storage';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getQuizzes } from '@/lib/supabase';
 
 export function Dashboard() {
-  const [customQuizzes, setCustomQuizzes] = useState<Quiz[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const saved = storage.getCustomQuizzes();
-    setCustomQuizzes(saved);
+    async function loadQuizzes() {
+      try {
+        const data = await getQuizzes();
+        setQuizzes(data);
+      } catch (error) {
+        console.error('Failed to load quizzes:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadQuizzes();
   }, []);
 
-  const handleQuizUpload = useCallback((quiz: Quiz) => {
-    storage.saveCustomQuiz(quiz);
-    setCustomQuizzes(prev => [...prev, quiz]);
-  }, []);
-
-  const router = useRouter();
-  
   const handleStartQuiz = useCallback((quiz: Quiz) => {
-    storage.saveActiveQuiz(quiz);
-    router.push('/configure');
+    if (!quiz.id) {
+      console.error('No quiz ID available');
+      return;
+    }
+    console.log('Starting quiz with ID:', quiz.id);
+    router.push(`/quiz?id=${encodeURIComponent(quiz.id)}`);
   }, [router]);
+
+  const handleImport = useCallback(() => {
+    router.push('/import');
+  }, [router]);
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64">
+      <p className="text-lg text-gray-500">Loading quizzes...</p>
+    </div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -36,61 +51,27 @@ export function Dashboard() {
           Welcome to QuizCraft
         </h1>
         <p className="text-xl text-gray-500">
-          Choose a quiz topic or upload your own quiz JSON.
+          Choose a quiz topic or create your own quiz.
         </p>
       </div>
 
+      <div className="flex justify-end">
+        <button
+          onClick={handleImport}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium text-white bg-blue-600 h-10 px-4 py-2 hover:bg-blue-700"
+        >
+          Import Quiz
+        </button>
+      </div>
+
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Built-in Quizzes */}
-        <QuizCard
-          quiz={awsAiPractitionerQuiz}
-          onStart={handleStartQuiz}
-        />
-        <QuizCard
-          quiz={AWSAISERVICESQUIZ}
-          onStart={handleStartQuiz}
-        />
-        <QuizCard
-          quiz={SPRINGTESTING}
-          onStart={handleStartQuiz}
-        />
-        <QuizCard
-          quiz={SPRINGREST}
-          onStart={handleStartQuiz}
-        />
-        <QuizCard
-          quiz={SPRINGWEBFLUX}
-          onStart={handleStartQuiz}
-        />
-        <QuizCard
-          quiz={SPRINGINTERVIEW}
-          onStart={handleStartQuiz}
-        />
-        <QuizCard
-          quiz={SPRINGDATA}
-          onStart={handleStartQuiz}
-        />
-        <QuizCard
-          quiz={SPRINGCORE}
-          onStart={handleStartQuiz}
-        />
-        
-        {/* Custom Quizzes */}
-        {customQuizzes.map((quiz, index) => (
+        {quizzes.map((quiz) => (
           <QuizCard
-            key={`${quiz.metadata.title}-${index}`}
+            key={quiz.id}
             quiz={quiz}
             onStart={handleStartQuiz}
           />
         ))}
-        
-        {/* Upload Card */}
-        <FileUpload onQuizUpload={handleQuizUpload} />
-      </div>
-
-      {/* JSON Format Helper */}
-      <div className="mt-8">
-        <JsonFormatHelper />
       </div>
     </div>
   );
